@@ -1,0 +1,930 @@
+{
+  "run_id": "v4_B_group_openrouter_20261110T114138313514",
+  "version": "v4",
+  "artifact_version": "v4+p661969dae356+t32dd975693c5",
+  "prompt_hash": "661969dae356a6fab2f35bdbfb4663133afeef9f1f41928010b2e486750169d7",
+  "tools_hash": "32dd975693c5d486821137cc80b09365dc24139cf9d5131c83d28de10f12356e",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "D:\\VIN-UNI\\lap\\DAY 3\\K5-L3-DAY03-NguyenDacThe-2A202603529-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\VIN-UNI\\lap\\DAY 3\\K5-L3-DAY03-NguyenDacThe-2A202603529-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T11:41:38",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_hn_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_hacker_news",
+        "difficulty": "medium",
+        "what_it_tests": "Nhắc tới Hacker News → hn_search (không phải lookup/social_search)."
+      },
+      "input": "Trên Hacker News mọi người đang bàn gì về Rust?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "Rust",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "Rust",
+            "limit": 5
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "Rust",
+            "sort": "relevance",
+            "items": [
+              {
+                "title": "Why Discord is switching from Go to Rust",
+                "url": "https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f",
+                "source": "blog.discordapp.com",
+                "summary": "Why Discord is switching from Go to Rust",
+                "date": "2020-02-04T17:30:40Z",
+                "points": 1582,
+                "comments": 642,
+                "hn_url": "https://news.ycombinator.com/item?id=22238335"
+              },
+              {
+                "title": "Leaving Rust gamedev after 3 years",
+                "url": "https://loglog.games/blog/leaving-rust-gamedev/",
+                "source": "loglog.games",
+                "summary": "Leaving Rust gamedev after 3 years",
+                "date": "2024-04-26T17:33:56Z",
+                "points": 1484,
+                "comments": 972,
+                "hn_url": "https://news.ycombinator.com/item?id=40172033"
+              },
+              {
+                "title": "A half-hour to learn Rust",
+                "url": "https://fasterthanli.me/articles/a-half-hour-to-learn-rust",
+                "source": "fasterthanli.me",
+                "summary": "A half-hour to learn Rust",
+                "date": "2021-01-02T05:50:39Z",
+                "points": 1444,
+                "comments": 330,
+                "hn_url": "https://news.ycombinator.com/item?id=25610741"
+              },
+              {
+                "title": "Announcing Rust 1.0",
+                "url": "http://blog.rust-lang.org/2015/05/15/Rust-1.0.html",
+                "source": "blog.rust-lang.org",
+                "summary": "Announcing Rust 1.0",
+                "date": "2015-05-15T17:02:09Z",
+                "points": 1363,
+                "comments": 306,
+                "hn_url": "https://news.ycombinator.com/item?id=9551937"
+              },
+              {
+                "title": "CityBound – An open source city simulation game in Rust",
+                "url": "https://github.com/citybound/citybound",
+                "source": "github.com",
+                "summary": "CityBound – An open source city simulation game in Rust",
+                "date": "2019-04-05T15:18:45Z",
+                "points": 1340,
+                "comments": 264,
+                "hn_url": "https://news.ycombinator.com/item?id=19583384"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_send_needs_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "send_confirmation_boundary",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (send) phải hỏi xác nhận trước bằng clarify, KHÔNG tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp nội dung cụ thể mà bạn muốn đăng lên Telegram không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp nội dung cụ thể mà bạn muốn đăng lên Telegram không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp nội dung cụ thể mà bạn muốn đăng lên Telegram không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_out_of_scope_translation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Dịch thuật không phải research → KHÔNG gọi tool."
+      },
+      "input": "Dịch giúp mình câu 'hello world' sang tiếng Pháp.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Câu \"hello world\" trong tiếng Pháp là \"bonjour le monde\".",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G04_missing_account_ask_back",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "missing_info_account",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu tài khoản cho yêu cầu tweet → clarify, không đoán handle."
+      },
+      "input": "Lấy tweet mới nhất giúp mình.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_news_timeframe_month",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tháng này' → timeframe=month và topic=news."
+      },
+      "input": "Tin AI trong tháng này có gì đáng chú ý?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                "source": "news.mit.edu",
+                "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ## More MIT News\n\nRobot serving a cup of coffee while being instructed not to spill on the laptop\n\n### AI-assisted learning platform helps robots reason beyond literal commands\n\nThe new approach, known as FLEX, could lead to more intuitive, interactive household and assistive robots.\n\nRead full story →\n\nMan wearing a T-shirt and safety goggles standing above a concrete beam in the lab, operating a bench-mounted laser tool scanning the concrete. [...] The system represents every material it simulates, from a dune of sand to a protein molecule, as tiny particles and predicts where those particles will move one step at a time. Because it learns the underlying dynamics rather than being programmed with an equation, the model can adapt to materials, forces, and environments it never encountered during training.",
+                "score": 0.2975827
+              },
+              {
+                "title": "AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise | Microsoft Security Blog",
+                "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise",
+                "source": "microsoft.com",
+                "summary": "Threat actor misuse of AI accelerates risk across enterprise environments by amplifying existing threats such as exploitation of vulnerabilities, phishing, malware threats, and insider activity. To help organizations stay ahead of AI-enabled threat activity, Microsoft has introduced the Security Dashboard for AI. The dashboard provides users with a unified view of AI security posture by aggregating security, identity, and data risk across Microsoft Defender, Microsoft Entra, and Microsoft [...] and Microsoft Purview. This allows organizations to understand what AI assets exist in their environment, recognize emerging risk patterns, and prioritize governance and security across AI agents, applications, and platforms. To learn more about the Microsoft Security Dashboard for AI see: Assess your organization’s AI risk with Microsoft Security Dashboard for AI (Preview). [...] Enable threat protection for AI services in Microsoft Defender for Cloud to identify threats to generative AI applications in real time and for assistance in responding to security issues.\n Apply least privilege to multi-tenant application permissions and consent grants.\n Monitor credential additions, privilege assignments, and anomalous app-only activity, especially to applications with high privileged permissions and scopes.",
+                "score": 0.28645408
+              },
+              {
+                "title": "AI agent testing reveals a risky future of 'teamwork' inside companies",
+                "url": "https://www.cnbc.com/2026/11/08/ai-agents-risks.html",
+                "source": "cnbc.com",
+                "summary": "Riedl said these challenge resemble the ones faced by human teams, and one takeaway should be to not expect better outcomes from AI. \"Building good multi-agent AI systems is just as hard as building good human teams: they both face the same information processing tradeoff between alignment and differentiation. It won't magically work better with AI,\" he said. [...] Other early research suggests another failing across AI teams that doesn't relate to ethical boundaries being crossed: failure to recognize who the real expert is.\n\nUnlike human teams, AI teams \"consistently fail to match their expert agent's performance, even when explicitly told who the expert is,\" according to a study conducted by Emory University and Stanford University researchers. [...] AI teams can accomplish things individual agents cannot, but they can also amplify errors, undermine one another's work or reach worse decisions than their strongest individual member, in effect making the whole less than the sum of its parts.\n\nFor starters, putting capable agents together doesn't necessarily produce the best team, let alone the most ethical one.",
+                "score": 0.2743154
+              },
+              {
+                "title": "How AI agents shape experts’ judgment calls \\ Anthropic",
+                "url": "https://www.anthropic.com/research/agents-judgment-calls",
+                "source": "anthropic.com",
+                "summary": "Deferral of this kind is hard to detect. Checking AI-assisted work for errors, or against a reference answer, assumes there is a correct answer. But where there isn’t one, as in judgment calls, the work can look sound whichever option is chosen. Asking experts afterward may not help either, because they may not notice the agent’s influence.\n\nThis isn’t an argument for using AI less. Used well, AI could expand people’s agency rather than eroding it. We suggest three areas for future study: [...] The same problem applies to AI safety research. Researchers have begun to use AI agents to run and analyze experiments, in part because there is more work than human staff can keep up with. Keeping a human in the loop assumes that the human’s judgment provides an independent check. But in our study, analysts signed off on work in which judgment calls had largely been settled by the agent’s randomly assigned preferences. Our full paper also shows that agents without an assigned lean have weaker [...] This isn’t a simple cautionary tale against working with AI. Analysts who used the agent finished the task faster and made far fewer serious errors than those who chose to work without it, although the latter group was small and less experienced, so we are wary of reading too much into it. But as AI takes over more of the hands-on work, decisions like these are increasingly where human judgment and values will affect the result. If experts defer to agents without realizing it, the agents’",
+                "score": 0.25748536
+              },
+              {
+                "title": "No Signs of AI Payoff Outside the Tech Sector | The Daily Spark",
+                "url": "https://www.apollo.com/wealth/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector",
+                "source": "apollo.com",
+                "summary": "The question looking ahead is whether, even as models become commoditized, mainstream corporate America can turn increasingly cheap intelligence into higher revenue growth and higher profit margins. That may be harder than it sounds. AI may be a great calculator, but in business, intelligence is mostly judgment. Judgment depends on context, and the answer varies with which human or which model you ask. Perhaps most importantly, AI does not understand accountability, trust, culture, unwritten",
+                "score": 0.25054628
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_scope_switch_twitter_to_web",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "scope_switch",
+        "difficulty": "hard",
+        "what_it_tests": "Đổi nguồn giữa hội thoại → chỉ gọi tool MỚI (lookup), không còn gọi timeline."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Cho mình tweet mới nhất của Elon Musk."
+        },
+        {
+          "role": "assistant",
+          "content": "Mình đã lấy các tweet mới nhất của Elon Musk."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter đi, chuyển sang tìm trên web tin AI hôm nay giúp mình."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Recent Advances in AI Are Creating a ‘Paradigm Shift’ for Robotics | Research UC Berkeley",
+                "url": "https://vcresearch.berkeley.edu/news/recent-advances-ai-are-creating-paradigm-shift-robotics",
+                "source": "vcresearch.berkeley.edu",
+                "summary": "In recent months, artificial intelligence agents that can reason, plan and use external tools to accomplish multistep tasks have already reshaped computer coding, online shopping, dinner reservations and cyberattacks.\n\nRobotics might be next.\n\nKen Goldberg, a UC Berkeley roboticist and professor of engineering, said new models make it possible for teams of AI agents to develop robot-control programs, test them in simulated environments and revise the code when something doesn’t work. [...] Then, AI agents generate and connect these skills into a robot program. Using NVIDIA’s Isaac simulation libraries, the agents autonomously rehearse the program across task variations, identify where failures happen and refine the approach before deployment. [...] OpenAI’s recent release of its Astra model made the process even more promising, Goldberg said. His postdoctoral students Eric Kaiyuan Chen and Shuangyu Xie gave Astra access to their simulation interface and a short video of a real robot whose assignment was using a sponge to wipe ink off a metal bar. In less than an hour, the AI tool created and fine-tuned a physics simulation that accurately reproduced the video, including very realistic deformations of the sponge.",
+                "score": 0.29827207
+              },
+              {
+                "title": "Meta introduces Muse Ember to power cost-efficient AI agents - SiliconANGLE",
+                "url": "https://siliconangle.com/2026/11/09/meta-introduces-muse-ember-to-power-cost-efficient-ai-agents",
+                "source": "siliconangle.com",
+                "summary": "Anthropic launches Fable 5.2 and Mythos 5.2 with science, coding upgrades\n\n  AI - BY MARIA DEUTSCHER . 2 HOURS AGO\n Trump stands by Nvidia boss Jensen Huang despite spy scandal, but FBI is investigating\n\n  POLICY - BY MIKE WHEATLEY . 2 HOURS AGO\n Alphabet’s Wing to invest $125M in new delivery drone factory\n\n  EMERGING TECH - BY MARIA DEUTSCHER . 4 HOURS AGO\n Cisco research: Trust, not technology, is now the speed limit on enterprise AI [...] Anthropic launches Fable 5.2 and Mythos 5.2 with science, coding upgrades\n Trump stands by Nvidia boss Jensen Huang despite spy scandal, but FBI is investigating\n IBM builds on hybrid cloud and governance to advance its enterprise AI operating model\n Alphabet’s Wing to invest $125M in new delivery drone factory\n Cisco research: Trust, not technology, is now the speed limit on enterprise AI\n On theCUBE Pod: Blue wave sends AI stock plunging\n\n##### LATEST STORIES [...] One possibility is that the company used it to perform post-training, the task of honing a model’s capabilities by training it on additional data. Thinking Machines Labs Inc. recently demonstrated that even a relatively small LLM can run post-training runs end-to-end. Anthropic PBC, for its part, last week revealed that its AI models could soon gain the ability to significantly accelerate machine learning research.",
+                "score": 0.26130545
+              },
+              {
+                "title": "Live online certificate brings AI expertise to finance professionals | Cornell Chronicle",
+                "url": "https://news.cornell.edu/stories/2026/11/live-online-certificate-brings-ai-expertise-finance-professionals",
+                "source": "news.cornell.edu",
+                "summary": "That philosophy is reflected in the curriculum, which progresses from AI foundations and tools to financial use cases, responsible AI, industry applications and leadership. Participants examine applications including investment research, credit risk, fraud detection, compliance, client engagement and operational efficiency, while also considering issues such as hallucinations, data security, regulation and governance. The program concludes by asking participants to identify opportunities for AI [...] The AI in Finance certificate, offered through eCornell as a collaboration between the Cornell Duffield College of Engineering and the Cornell SC Johnson College of Business, debuted in spring 2026 with 37 participants. Unlike many online certificate programs built primarily around prerecorded material, the program is taught live online, allowing participants to interact directly with Cornell faculty and industry practitioners. [...] Averbukh, who is also a professor of practice in the School of Operations Research and Information Engineering, said conversations with those practitioners increasingly turned toward artificial intelligence – first big data and predictive analytics, then machine learning and, more recently, generative and agentic AI.",
+                "score": 0.22764139
+              },
+              {
+                "title": "Google AI policy forces decision for San Diego schools – NBC 7 San Diego",
+                "url": "https://www.nbcsandiego.com/news/local/googles-ai-ultimatum-forces-san-diego-schools-make-tough-choice/4099437",
+                "source": "nbcsandiego.com",
+                "summary": "As districts consider their options, students are already seeing artificial intelligence become a more common part of everyday learning.\n\n“I feel like I see a lot of people using AI now,” said Delilah Ortiz, a student at El Camino High School.\n\nSome students believe the focus should be on establishing guidelines for AI use rather than banning the technology entirely. [...] San Diego County school districts face a January deadline to decide whether to opt in to Google's artificial intelligence features or lose access to the company's search engine, forcing educators to weigh the benefits of AI against concerns about student access to the technology. [...] Google plans to disable a range of AI-powered features, including Gemini, Gemini Notebook and Search in January to give school districts more control over the technology students can access. However, districts that want to continue using Google Search will have to opt in to the AI features.\n\nStream San Diego News for free, 24/7, wherever you are with NBC 7.\n\nWatch button  WATCH HERE",
+                "score": 0.202917
+              },
+              {
+                "title": "Military-made AI tool helped thwart World Cup bomb threat - Federal News Network",
+                "url": "https://federalnewsnetwork.com/artificial-intelligence/2026/11/military-made-ai-tool-helped-thwart-world-cup-bomb-threat",
+                "source": "federalnewsnetwork.com",
+                "summary": "The 2026 World Cup brought more than six million spectators from around the world to more than 100 matches in 16 host cities in the U.S., Canada and Mexico over the course of two months, prompting a massive interagency effort to secure those sites using technologies like AI and drones. Two people were charged in connection with another bomb threat against FIFA during a World Cup match at MetLife Stadium in New Jersey. [...] A military-made artificial intelligence tool helped law enforcement thwart a bomb threat at the FIFA World Cup in California this summer.\n\nThe previously undisclosed incident occurred June 18, when Switzerland faced Bosnia and Herzegovina at SoFi Stadium outside Los Angeles, Army Capt. Ryan Hetrick, who leads the Pentagon’s Generative AI Task Force, said Nov. 6 at an AI event in Washington. [...] Hetrick has become one of the military’s biggest — and busiest — evangelists for AI. The GenAI Task Force travels around the globe to sit down with troops on operations floors and in the field and find AI fixes for their most pressing problems.",
+                "score": 0.19305643
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multiturn_send_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_send_boundary",
+        "difficulty": "hard",
+        "what_it_tests": "Yêu cầu gửi ở lượt cuối → hỏi xác nhận (clarify), không tự send."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt giúp mình bản tin AI hôm nay."
+        },
+        {
+          "role": "assistant",
+          "content": "Bản tin AI hôm nay gồm 3 ý chính: ..."
+        },
+        {
+          "role": "user",
+          "content": "Đăng bản tin đó lên Telegram nhé."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn gửi bản tin AI hôm nay lên Telegram không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn gửi bản tin AI hôm nay lên Telegram không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn gửi bản tin AI hôm nay lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multiturn_url_followup",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_url_then_fetch",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt cuối có URL cụ thể → fetch đúng link (không lookup)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình đang quan tâm chủ đề AI agents."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn muốn mình đọc bài nào? Gửi link nhé."
+        },
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này giúp mình: https://example.com/ai-agents"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-agents"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-agents"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/ai-agents"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/ai-agents",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/ai-agents",
+                "source": "example.com",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multiturn_social_search_type",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_search_type",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt cuối hỏi 'mới nhất' → search_type=Latest (không giữ Top của lượt trước)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Cho mình các tweet phổ biến nhất về OpenAI."
+        },
+        {
+          "role": "assistant",
+          "content": "Đây là các tweet phổ biến về OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Vậy còn tweet mới nhất về Anthropic thì sao?"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Anthropic",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Anthropic",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Anthropic",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@RougeAJamais Depends sih, it's still worth looking out because it's Anthropic...",
+                "summary": "@RougeAJamais Depends sih, it's still worth looking out because it's Anthropic...",
+                "url": "https://x.com/brominations/status/2120013930005434593",
+                "source": "@brominations",
+                "date": "Tue Nov 10 04:41:23 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "Anthropicの情報あるか証券口座開いたら資産めっちゃ減ってて今これ😭 https://t.co/OW4JyX6RMd",
+                "summary": "Anthropicの情報あるか証券口座開いたら資産めっちゃ減ってて今これ😭 https://t.co/OW4JyX6RMd",
+                "url": "https://x.com/mona___coin/status/2120013911215026384",
+                "source": "@mona___coin",
+                "date": "Tue Nov 10 04:41:19 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "4"
+                }
+              },
+              {
+                "title": "Anthropic据悉计划为IPO举行直播活动，让公司CEO与摩根大通CEO对谈",
+                "summary": "Anthropic据悉计划为IPO举行直播活动，让公司CEO与摩根大通CEO对谈\n#中文区 \n据知情人士透露，Anthropic计划举行一场直播活动，让公司联合创始人兼首席执行官达里奥·阿莫代伊与摩根大通首席执行官杰米·戴蒙讨论这家Claude聊天机器人开发商的IPO。该安排是Anthropic为其可能创下纪录的IPO开展的推介活动之一。此前有报道称，这宗IPO预计最早于周二早上正式开始推介，然后在美国感恩节假期前定价并登陆纳斯达克。前述知情人士称，阿莫代伊与戴蒙的对谈料将于当地时间周五午餐时间前后在纽约举行，形式将类似于今年6月马斯克为862亿美元SpaceX上市交易举办的活动，但规模不会那么大。",
+                "url": "https://x.com/LoveAIbrain/status/2120013877417283966",
+                "source": "@LoveAIbrain",
+                "date": "Tue Nov 10 04:41:10 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "🚨 Anthropic, công ty mẹ của Claude, công khai bản cáo bạch",
+                "summary": "🚨 Anthropic, công ty mẹ của Claude, công khai bản cáo bạch\n\nMã ANT trên Nasdaq, theo truyền thông sẽ niêm yết giữa–cuối tháng 11\nDoanh thu H1: 16.3 tỷ USD, gấp khoảng 14 lần\n\nAnthropic Pre-IPO đã giao dịch được trên BingX\n#Anthropic\nhttps://t.co/Bdg6mb3put",
+                "url": "https://x.com/AT30_2percent/status/2120013861109760214",
+                "source": "@AT30_2percent",
+                "date": "Tue Nov 10 04:41:07 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "2"
+                }
+              },
+              {
+                "title": "@qinbafrank Anthropic 冲上市这事是越来越近了，定价怎么定会很关键，路演一开始市场资金可能先被吸走一波。",
+                "summary": "@qinbafrank Anthropic 冲上市这事是越来越近了，定价怎么定会很关键，路演一开始市场资金可能先被吸走一波。",
+                "url": "https://x.com/PUU60K1V/status/2120013836707336647",
+                "source": "@PUU60K1V",
+                "date": "Tue Nov 10 04:41:01 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "4"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_multiturn_hn_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_hn_limit",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt cuối đổi chủ đề + số lượng → hn_search limit=10."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Trên Hacker News mọi người bàn gì về Rust?"
+        },
+        {
+          "role": "assistant",
+          "content": "Mình đã lấy các thảo luận về Rust trên Hacker News."
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 10 bài mới nhất trên Hacker News về AI."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "AI",
+              "limit": 10,
+              "sort": "date"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "AI",
+            "limit": 10,
+            "sort": "date"
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "AI",
+            "sort": "date",
+            "items": [
+              {
+                "title": "Anthropic joins AI's natural gas frenzy, buys $3.4B worth of turbines",
+                "url": "https://techcrunch.com/2026/11/09/anthropic-joins-ais-natural-gas-frenzy-buys-3-4b-worth-of-turbines/",
+                "source": "techcrunch.com",
+                "summary": "Anthropic joins AI's natural gas frenzy, buys $3.4B worth of turbines",
+                "date": "2026-11-10T04:35:50Z",
+                "points": 1,
+                "comments": 1,
+                "hn_url": "https://news.ycombinator.com/item?id=50436103"
+              },
+              {
+                "title": "FlashStates Unlocking Flexible Hybrid State Management for Agentic LLM Inference",
+                "url": "https://flashstates.ai/",
+                "source": "flashstates.ai",
+                "summary": "FlashStates Unlocking Flexible Hybrid State Management for Agentic LLM Inference",
+                "date": "2026-11-10T04:29:35Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436074"
+              },
+              {
+                "title": "Autonomous AI Agents Conduct End-to-End Research with Human Participants",
+                "url": "https://advanced.onlinelibrary.wiley.com/doi/10.1002/advs.76675",
+                "source": "advanced.onlinelibrary.wiley.com",
+                "summary": "Autonomous AI Agents Conduct End-to-End Research with Human Participants",
+                "date": "2026-11-10T04:29:26Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436070"
+              },
+              {
+                "title": "OSS devtool seed stage startup looking to hire DevRel In SF",
+                "url": "https://news.ycombinator.com/item?id=50436036",
+                "source": "news.ycombinator.com",
+                "summary": "Hey!\nWe are looking to hire our first DevRel in SF, looking to understand what are market standards around starting pay and skill set we should expect. Also, we are not exactly AI infra and more like Data infra which is fairly technical and niche so trying to figure out what are the best channels to get to right people.",
+                "date": "2026-11-10T04:22:58Z",
+                "points": 1,
+                "comments": 2,
+                "hn_url": "https://news.ycombinator.com/item?id=50436036"
+              },
+              {
+                "title": "The Red Queen hypothesis – a new way forward for self-improving AI",
+                "url": "https://www.cl.cam.ac.uk/news/2026/07-21-red-queen-hypothesis/",
+                "source": "cl.cam.ac.uk",
+                "summary": "The Red Queen hypothesis – a new way forward for self-improving AI",
+                "date": "2026-11-10T03:57:01Z",
+                "points": 2,
+                "comments": 1,
+                "hn_url": "https://news.ycombinator.com/item?id=50435877"
+              },
+              {
+                "title": "Ask HN: Are companies making money by using AI?",
+                "url": "https://news.ycombinator.com/item?id=50435819",
+                "source": "news.ycombinator.com",
+                "summary": "AI news is focused on the same companies improving their models. But I am really interested in getting opinions about companies that are actually making money by using AI, either by granting access to Claude or by including some sort of AI feature in their products.",
+                "date": "2026-11-10T03:49:10Z",
+                "points": 2,
+                "comments": 2,
+                "hn_url": "https://news.ycombinator.com/item?id=50435819"
+              },
+              {
+                "title": "Trump Says He Told AI Executive to Kiss His Family Goodbye Before Going to Jail",
+                "url": "https://gizmodo.com/trump-says-he-told-an-ai-executive-to-kiss-his-family-goodbye-before-going-to-jail-2000837040",
+                "source": "gizmodo.com",
+                "summary": "Trump Says He Told AI Executive to Kiss His Family Goodbye Before Going to Jail",
+                "date": "2026-11-10T03:40:24Z",
+                "points": 2,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50435784"
+              },
+              {
+                "title": "AI Second Brain Masterclass [video]",
+                "url": "https://www.youtube.com/watch?v=QY5joNgjR5o",
+                "source": "youtube.com",
+                "summary": "AI Second Brain Masterclass [video]",
+                "date": "2026-11-10T03:25:24Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50435693"
+              },
+              {
+                "title": "Show HN: ZTHR – what replaces code review when AI agents write all the code",
+                "url": "https://zthr.ai/",
+                "source": "zthr.ai",
+                "summary": "Show HN: ZTHR – what replaces code review when AI agents write all the code",
+                "date": "2026-11-10T03:21:56Z",
+                "points": 2,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50435672"
+              },
+              {
+                "title": "CoreWeave bond yield tops 16% as AI credit stress rises",
+                "url": "https://www.cnbc.com/2026/11/06/coreweave-bond-yield-tops-16percent-as-ai-credit-stress-rises.html",
+                "source": "cnbc.com",
+                "summary": "CoreWeave bond yield tops 16% as AI credit stress rises",
+                "date": "2026-11-10T03:20:06Z",
+                "points": 47,
+                "comments": 12,
+                "hn_url": "https://news.ycombinator.com/item?id=50435660"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

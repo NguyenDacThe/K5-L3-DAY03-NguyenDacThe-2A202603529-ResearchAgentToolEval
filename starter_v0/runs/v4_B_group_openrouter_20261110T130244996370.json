@@ -1,0 +1,930 @@
+{
+  "run_id": "v4_B_group_openrouter_20261110T130244996370",
+  "version": "v4",
+  "artifact_version": "v4+p199bae9a8703+t32dd975693c5",
+  "prompt_hash": "199bae9a8703c3db687ca558e43e73b679b8289286bda6f091b531fe4a02aec7",
+  "tools_hash": "32dd975693c5d486821137cc80b09365dc24139cf9d5131c83d28de10f12356e",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "artifacts\\versions\\v4\\system_prompt.md",
+  "tools": "artifacts\\versions\\v4\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T13:02:44",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_hn_search_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_hacker_news",
+        "difficulty": "medium",
+        "what_it_tests": "Nhắc tới Hacker News → hn_search (không phải lookup/social_search)."
+      },
+      "input": "Trên Hacker News mọi người đang bàn gì về Rust?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "Rust",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "Rust",
+            "limit": 5
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "Rust",
+            "sort": "relevance",
+            "items": [
+              {
+                "title": "Why Discord is switching from Go to Rust",
+                "url": "https://blog.discordapp.com/why-discord-is-switching-from-go-to-rust-a190bbca2b1f",
+                "source": "blog.discordapp.com",
+                "summary": "Why Discord is switching from Go to Rust",
+                "date": "2020-02-04T17:30:40Z",
+                "points": 1582,
+                "comments": 642,
+                "hn_url": "https://news.ycombinator.com/item?id=22238335"
+              },
+              {
+                "title": "Leaving Rust gamedev after 3 years",
+                "url": "https://loglog.games/blog/leaving-rust-gamedev/",
+                "source": "loglog.games",
+                "summary": "Leaving Rust gamedev after 3 years",
+                "date": "2024-04-26T17:33:56Z",
+                "points": 1484,
+                "comments": 972,
+                "hn_url": "https://news.ycombinator.com/item?id=40172033"
+              },
+              {
+                "title": "A half-hour to learn Rust",
+                "url": "https://fasterthanli.me/articles/a-half-hour-to-learn-rust",
+                "source": "fasterthanli.me",
+                "summary": "A half-hour to learn Rust",
+                "date": "2021-01-02T05:50:39Z",
+                "points": 1444,
+                "comments": 330,
+                "hn_url": "https://news.ycombinator.com/item?id=25610741"
+              },
+              {
+                "title": "Announcing Rust 1.0",
+                "url": "http://blog.rust-lang.org/2015/05/15/Rust-1.0.html",
+                "source": "blog.rust-lang.org",
+                "summary": "Announcing Rust 1.0",
+                "date": "2015-05-15T17:02:09Z",
+                "points": 1363,
+                "comments": 306,
+                "hn_url": "https://news.ycombinator.com/item?id=9551937"
+              },
+              {
+                "title": "CityBound – An open source city simulation game in Rust",
+                "url": "https://github.com/citybound/citybound",
+                "source": "github.com",
+                "summary": "CityBound – An open source city simulation game in Rust",
+                "date": "2019-04-05T15:18:45Z",
+                "points": 1340,
+                "comments": 264,
+                "hn_url": "https://news.ycombinator.com/item?id=19583384"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_send_needs_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "send_confirmation_boundary",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (send) phải hỏi xác nhận trước bằng clarify, KHÔNG tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp nội dung cụ thể của bản tin mà bạn muốn đăng lên Telegram không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp nội dung cụ thể của bản tin mà bạn muốn đăng lên Telegram không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp nội dung cụ thể của bản tin mà bạn muốn đăng lên Telegram không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_out_of_scope_translation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Dịch thuật không phải research → KHÔNG gọi tool."
+      },
+      "input": "Dịch giúp mình câu 'hello world' sang tiếng Pháp.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Câu \"hello world\" trong tiếng Pháp là \"bonjour le monde\".",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G04_missing_account_ask_back",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "missing_info_account",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu tài khoản cho yêu cầu tweet → clarify, không đoán handle."
+      },
+      "input": "Lấy tweet mới nhất giúp mình.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cho biết tài khoản nào mà bạn muốn lấy tweet mới nhất không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_news_timeframe_month",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tháng này' → timeframe=month và topic=news."
+      },
+      "input": "Tin AI trong tháng này có gì đáng chú ý?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "No Signs of AI Payoff Outside the Tech Sector | The Daily Spark",
+                "url": "https://www.apollo.com/wealth/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector",
+                "source": "apollo.com",
+                "summary": "The question looking ahead is whether, even as models become commoditized, mainstream corporate America can turn increasingly cheap intelligence into higher revenue growth and higher profit margins. That may be harder than it sounds. AI may be a great calculator, but in business, intelligence is mostly judgment. Judgment depends on context, and the answer varies with which human or which model you ask. Perhaps most importantly, AI does not understand accountability, trust, culture, unwritten [...] Despite massive investments and widespread hype around artificial intelligence, the technology has delivered zero financial payoff to corporate America outside of tech. Revenue per worker is rising for the Mag 7 but is flat for the S&P 493, see the first chart below. Profit margins are rising for the Mag 7 but are flat for the S&P 493, see the second chart below. And there are still no signs of AI boosting productivity growth, see the third chart below. With no impact on the bottom line, [...] VC-backed companies are spending more and more on tokens, but mainstream corporate America does not need the latest model and is unwilling to pay for it. As long as agentic AI and token spending are confined to a small part of the economy, the macroeconomic effects of AI will be very limited, see the fourth and fifth charts below.",
+                "score": 0.5779718
+              },
+              {
+                "title": "How AI agents shape experts’ judgment calls \\ Anthropic",
+                "url": "https://www.anthropic.com/research/agents-judgment-calls",
+                "source": "anthropic.com",
+                "summary": "This isn’t a simple cautionary tale against working with AI. Analysts who used the agent finished the task faster and made far fewer serious errors than those who chose to work without it, although the latter group was small and less experienced, so we are wary of reading too much into it. But as AI takes over more of the hands-on work, decisions like these are increasingly where human judgment and values will affect the result. If experts defer to agents without realizing it, the agents’ [...] Deferral of this kind is hard to detect. Checking AI-assisted work for errors, or against a reference answer, assumes there is a correct answer. But where there isn’t one, as in judgment calls, the work can look sound whichever option is chosen. Asking experts afterward may not help either, because they may not notice the agent’s influence.\n\nThis isn’t an argument for using AI less. Used well, AI could expand people’s agency rather than eroding it. We suggest three areas for future study: [...] it, the agents’ preferences—which could be arbitrary or misaligned—could shape important decisions about policy proposals or research directions without anyone having chosen those preferences. This is particularly important for research into keeping AI safe. Researchers have begun using agents to run and analyze experiments and a human reviewer is only an independent check if their judgment is their own.",
+                "score": 0.53509843
+              },
+              {
+                "title": "AI agent testing reveals a risky future of 'teamwork' inside companies",
+                "url": "https://www.cnbc.com/2026/11/08/ai-agents-risks.html",
+                "source": "cnbc.com",
+                "summary": "Companies may need to decide which agent has authority over which task, what information gets passed between agents, which systems each agent can access and when a human must intervene. They may also need to build mechanisms for disagreement, rather than assuming that more communication or greater agreement will always improve results.\n\nSome business experts say that takes us back to the \"human in the loop\" that is so often referenced as critical in the adoption of AI by organizations. [...] Riedl said these challenge resemble the ones faced by human teams, and one takeaway should be to not expect better outcomes from AI. \"Building good multi-agent AI systems is just as hard as building good human teams: they both face the same information processing tradeoff between alignment and differentiation. It won't magically work better with AI,\" he said. [...] Other early research suggests another failing across AI teams that doesn't relate to ethical boundaries being crossed: failure to recognize who the real expert is.\n\nUnlike human teams, AI teams \"consistently fail to match their expert agent's performance, even when explicitly told who the expert is,\" according to a study conducted by Emory University and Stanford University researchers.",
+                "score": 0.5211513
+              },
+              {
+                "title": "A single AI model simulates the behavior of many substances, from sliding sand to folding proteins | MIT News | Massachusetts Institute of Technology",
+                "url": "https://news.mit.edu/2026/single-ai-model-simulates-many-substances-behavior-1109",
+                "source": "news.mit.edu",
+                "summary": "Unified simulation\n\nFor this work, the researchers drew inspiration from world models. These powerful AI systems learn the rules that govern the physical world so they can predict how objects or environments will change over time in response to certain actions or conditions.\n\nThe researchers applied these concepts to develop a unified AI architecture that can simulate multiple types of physical phenomena. [...] ### With a feel for physics, AI models simulate a wider range of real-world scenarios\n\nIllustration shows purple and orange balls, floating and connected like a neural network or like molecules. White molecule figures are also floating against the dark background.\n\n### Learning the language of molecules to predict their properties\n\nBlack molecule icons have red and green additional parts.\n\n### Could LLMs help design our next medicines and materials?\n\n## More MIT News [...] Instead, the researchers designed a neural network that learns to solve governing equations in general, eliminating the need to design a new model and solver to handle each one.\n\nOnce WorldParticle converts an object into particles, a neural network takes the 3D positions and physical properties of the particles as inputs. It outputs their positions and properties for the next frame of the simulation, predicting the material’s motion over time and space in one-second increments.",
+                "score": 0.5199174
+              },
+              {
+                "title": "Authors Can Defend Against AI Allegations With ‘Paper Trail’ Tools. Is It Enough? | WIRED",
+                "url": "https://www.wired.com/story/authors-can-defend-against-ai-allegations-with-paper-trail-tools",
+                "source": "wired.com",
+                "summary": "This past March, the publishing industry found out: Following widespread speculation on social media that a horror novel titled Shy Girl was largely AI-generated, and a Times article about those claims, Hachette Book Group canceled an upcoming US publication run for the novel and discontinued it in the UK, where it had already been released. According to Pangram, a robust but by no means infallible AI detection tool, some 78 percent of the text was AI-generated. [...] Some argue that trying to institutionalize vetting systems for human authorship is simply impractical—and may soon be a moot point anyway. Jane Friedman, an author and publishing business expert, recently argued in her industry newsletter The Bottom Line, that the era of AI scandals is likely to be short-lived, given the improvements of Pangram and similar detectors. Moreover, she wrote, authors have now seen what may happen if they attempt to pass off AI-generated writing as their own. [...] “If what you're selling are your words and your voice and your imagination, your creativity, using AI doesn't make sense,” Rasenberger says, noting that authors’ pride in their own work means AI slop is far less common in publishing than one might think. “I've talked to editors, particularly editors of literary nonfiction and fiction,” Rasenberger says, “and some of them will say, ‘I never see AI-generated submissions, I'd know it if I did.’”",
+                "score": 0.475377
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_scope_switch_twitter_to_web",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "scope_switch",
+        "difficulty": "hard",
+        "what_it_tests": "Đổi nguồn giữa hội thoại → chỉ gọi tool MỚI (lookup), không còn gọi timeline."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Cho mình tweet mới nhất của Elon Musk."
+        },
+        {
+          "role": "assistant",
+          "content": "Mình đã lấy các tweet mới nhất của Elon Musk."
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter đi, chuyển sang tìm trên web tin AI hôm nay giúp mình."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "AI and your job: Threat or opportunity?",
+                "url": "https://www.fox10tv.com/2026/11/10/ai-your-job-threat-or-opportunity",
+                "source": "fox10tv.com",
+                "summary": "MOBILE, Ala. (WALA) - Artificial intelligence is becoming a bigger part of everyday life, raising questions about what the technology could mean for workers and their jobs.\n\nSome economists believe AI poses a particular threat to entry-level and repetitive work, including call center, data entry and junior copywriting jobs, according to The Wall Street Journal. Those tasks may be easier to automate. [...] But AI could also create opportunities. A Bloomberg article points to potential job growth in construction and manufacturing as companies build data centers and produce the chips that power the technology. Some higher-skilled office workers could also benefit if AI helps them become more productive. [...] The long-term impact on jobs remains unclear, but workers can take steps to prepare. Exploring AI chatbots, writing assistants and other tools may help people find ways to work more efficiently and develop skills that complement the technology.",
+                "score": 0.42348245
+              },
+              {
+                "title": "Opinion: AI cannot replace being human – The Battalion",
+                "url": "https://thebatt.com/opinion/opinion-ai-cannot-replace-being-human",
+                "source": "thebatt.com",
+                "summary": "I understand the appeal. College is busy. Between classes, jobs, extracurriculars, leadership positions and trying to maintain some semblance of a social life, there are never enough hours in the day. AI makes things easier. It can generate an outline, rewrite a paragraph, summarize a reading or produce an entire essay before you have even finished your Celsius. But convenience does not necessarily facilitate education. [...] There is also something to be said about individuality. AI can generate an argument, imitate a writing style or suggest a creative direction, but our perspectives are developed through our own experiences, disagreements, mistakes and interpretations. The things that make our voices interesting are often the very things that cannot be neatly generated from a prompt. If we constantly rely on the same tools to tell us what to think and how to express it, we risk losing the differences that make [...] I am not asking anyone to abandon AI. I use it, and I recognize the benefits it provides. But I do think we need to become more conscientious about when we use it and what we are asking it to do for us. Let it help with the tedious tasks. Let it serve as a resource. But do not let it become a substitute for your own intellectual development.",
+                "score": 0.4031679
+              },
+              {
+                "title": "‘AI rebounding’: Nearly 20% of U.S. workers replaced by AI are being asked back | Fortune",
+                "url": "https://fortune.com/2026/11/09/ai-rebounding-20-us-workers-replaced-higher-pay-job-security",
+                "source": "fortune.com",
+                "summary": "Ford also hired and promoted 350 experienced engineers in June after AI-powered quality control tools failed to perform as expected. The automaker said AI had contributed to quality improvements but emphasized the importance of combining the tech with experienced engineering teams. [...] “Organizations are making fast, sometimes myopic, decisions about their people based on an incomplete picture of what their employees can do with or without AI,” Lucy Beaumont, global senior vice president of product and design at SHL, said in a press release. “AI rebounding is what happens when a company automates a role before it has genuinely assessed the human capability inside it. The AI doesn’t deliver, the gap becomes obvious, and the business ends up rehiring the same experts they just [...] Fortune Daily breaks the traditional barrier between audience and newsroom. The show transforms Fortune’s trusted reporting into actionable, conversational, and entertaining insights for an emerging class of business leaders. Watch here.\n\nAbout the Author\n\nBy Joshua HongNews Fellow\n\nJoshua Hong is a News Fellow at Fortune covering data, AI, cybersecurity, energy, and retail.\n\nSee full bio\n\nAdd Fortune on Google for similar content.\n\nLatest in AI\n\n---\n\nMost Popular\n\n---\n\nRecommended For You",
+                "score": 0.2654493
+              },
+              {
+                "title": "Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn",
+                "url": "https://time.com/article/2026/11/10/permitting-bill-data-centers",
+                "source": "time.com",
+                "summary": "Personalized Content\n\n## Business\n\nFollow this section to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nPersonalized Content\n\n## AI\n\nFollow this tag to personalize your feed and get instant alerts.\n\nWHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\n# Congress’s Permitting Bill Is a ‘Massive Giveaway’ to the AI Data Center Industry, Critics Warn\n\nAndrew R. Chow\n\nPersonalized Content\n\nAndrew R. Chow\n\n## Andrew R. Chow [...] The bill’s advocates argue that its passage would serve as a rare bipartisan win and a victory for affordability. But critics, especially those on the left, are calling for Democrats to wait until the next Congress. “You just heard Americans demand much more of a say in a way that AI is shaping their lives,” says Michele Jawando, the CEO of Omidyar Network. “Whenever you try to ram something through in a lame duck Congress before you have a hundred new House members, that’s never a good look [...] WHY FOLLOW?\n\nUpdate your preferences in Account Settings\n\nCorrespondent\n\nNarrated by TIME AI.",
+                "score": 0.19392508
+              },
+              {
+                "title": "Military-made AI tool helped thwart World Cup bomb threat - Federal News Network",
+                "url": "https://federalnewsnetwork.com/artificial-intelligence/2026/11/military-made-ai-tool-helped-thwart-world-cup-bomb-threat",
+                "source": "federalnewsnetwork.com",
+                "summary": "The 2026 World Cup brought more than six million spectators from around the world to more than 100 matches in 16 host cities in the U.S., Canada and Mexico over the course of two months, prompting a massive interagency effort to secure those sites using technologies like AI and drones. Two people were charged in connection with another bomb threat against FIFA during a World Cup match at MetLife Stadium in New Jersey. [...] A military-made artificial intelligence tool helped law enforcement thwart a bomb threat at the FIFA World Cup in California this summer.\n\nThe previously undisclosed incident occurred June 18, when Switzerland faced Bosnia and Herzegovina at SoFi Stadium outside Los Angeles, Army Capt. Ryan Hetrick, who leads the Pentagon’s Generative AI Task Force, said Nov. 6 at an AI event in Washington. [...] Hetrick has become one of the military’s biggest — and busiest — evangelists for AI. The GenAI Task Force travels around the globe to sit down with troops on operations floors and in the field and find AI fixes for their most pressing problems.",
+                "score": 0.19305643
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multiturn_send_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_send_boundary",
+        "difficulty": "hard",
+        "what_it_tests": "Yêu cầu gửi ở lượt cuối → hỏi xác nhận (clarify), không tự send."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt giúp mình bản tin AI hôm nay."
+        },
+        {
+          "role": "assistant",
+          "content": "Bản tin AI hôm nay gồm 3 ý chính: ..."
+        },
+        {
+          "role": "user",
+          "content": "Đăng bản tin đó lên Telegram nhé."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn đăng bản tin này lên Telegram không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn đăng bản tin này lên Telegram không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn đăng bản tin này lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multiturn_url_followup",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_url_then_fetch",
+        "difficulty": "medium",
+        "what_it_tests": "Lượt cuối có URL cụ thể → fetch đúng link (không lookup)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình đang quan tâm chủ đề AI agents."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn muốn mình đọc bài nào? Gửi link nhé."
+        },
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này giúp mình: https://example.com/ai-agents"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-agents"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai-agents"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com/ai-agents"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com/ai-agents",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com/ai-agents",
+                "source": "example.com",
+                "summary": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou de surveillance est à éviter.\n\nДанный домен предназначен для использования в примерах документации без необходимости получения предварительного разрешения. Это не сервис; не рекомендуется его использование для тестирования и мониторинга.\n\nEste dominio está destinado al uso en ejemplos de documentación sin necesidad de permiso. Esto no es un servicio; evitar utilizarlo para realizar pruebas o monitoreos.\n\n [Learn more](https://iana.org/help/example-domains)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multiturn_social_search_type",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_search_type",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt cuối hỏi 'mới nhất' → search_type=Latest (không giữ Top của lượt trước)."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Cho mình các tweet phổ biến nhất về OpenAI."
+        },
+        {
+          "role": "assistant",
+          "content": "Đây là các tweet phổ biến về OpenAI."
+        },
+        {
+          "role": "user",
+          "content": "Vậy còn tweet mới nhất về Anthropic thì sao?"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Anthropic",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "Anthropic",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "Anthropic",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "this is the url to the game:",
+                "summary": "this is the url to the game:\n\nhttps://t.co/DFwjLQaSDS\n\nvercel is hosting it. if a million people click on the game at once it is on vercel to serve it and they charge you based on the plan - most likely it is usage based. openai has developed a hosting solution but anthropic hasn't touched that space yet so they aren't involved in any way.\n\nfrom what i can tell the game is only played on the client, so once vercel sends over the html, js, and assets (think images), it's job is done. \n\nserving games that don't have multi-player or any be requests is a lot cheaper since most of the work ends up being done on the users browser. they end up doing most of the work not you (the server) .",
+                "url": "https://x.com/EKeric13/status/2120034328742916340",
+                "source": "@EKeric13",
+                "date": "Tue Nov 10 06:02:26 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "Cela aurait été cool que le code source soit disponible https://t.co/MuK8gVE185",
+                "summary": "Cela aurait été cool que le code source soit disponible https://t.co/MuK8gVE185",
+                "url": "https://x.com/UlrichRozier/status/2120034325492322523",
+                "source": "@UlrichRozier",
+                "date": "Tue Nov 10 06:02:26 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "9"
+                }
+              },
+              {
+                "title": "https://t.co/LffkCsAvE9",
+                "summary": "https://t.co/LffkCsAvE9",
+                "url": "https://x.com/rjmontgomery/status/2120034317049168088",
+                "source": "@rjmontgomery",
+                "date": "Tue Nov 10 06:02:24 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "🇺🇸 #Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO - Bloomberg",
+                "summary": "🇺🇸 #Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO - Bloomberg\nhttps://t.co/u53uUXabgX",
+                "url": "https://x.com/C_Barraud/status/2120034296350314769",
+                "source": "@C_Barraud",
+                "date": "Tue Nov 10 06:02:19 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "516"
+                }
+              },
+              {
+                "title": "So i have get to know that the wild story of Anthropic -From txt prompting to working(anthropic's fable 5.2 )",
+                "summary": "So i have get to know that the wild story of Anthropic -From txt prompting to working(anthropic's fable 5.2 )\n\nAnthropic partnered  with \"hardware startup Diode computer\" to test fable 5.2's spatial geometric reasoning  from short txt prompts\n\n•The model engineered there functional devices -\n→ A USB spearkerphone\n→A home assistant hub\n→A handheld battery-power virtual pet \n\nWe just crossed the autonomous hardware engineering",
+                "url": "https://x.com/DrstaOne/status/2120034288464724413",
+                "source": "@DrstaOne",
+                "date": "Tue Nov 10 06:02:17 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "5"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_multiturn_hn_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_hn_limit",
+        "difficulty": "hard",
+        "what_it_tests": "Lượt cuối đổi chủ đề + số lượng → hn_search limit=10."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Trên Hacker News mọi người bàn gì về Rust?"
+        },
+        {
+          "role": "assistant",
+          "content": "Mình đã lấy các thảo luận về Rust trên Hacker News."
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 10 bài mới nhất trên Hacker News về AI."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "hn_search",
+            "args": {
+              "query": "AI",
+              "limit": 10,
+              "sort": "date"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "hn_search",
+          "args": {
+            "query": "AI",
+            "limit": 10,
+            "sort": "date"
+          },
+          "result": {
+            "tool": "hn_search",
+            "query": "AI",
+            "sort": "date",
+            "items": [
+              {
+                "title": "Codenotary released AgentMon Live as free, open-source software",
+                "url": "https://finance.yahoo.com/technology/ai/articles/codenotary-releases-agentmon-live-free-160000064.html",
+                "source": "finance.yahoo.com",
+                "summary": "Codenotary released AgentMon Live as free, open-source software",
+                "date": "2026-11-10T06:00:59Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436638"
+              },
+              {
+                "title": "Tell HN: Notion AI chat sessions have been exposed via Fireworks AI hack",
+                "url": "https://news.ycombinator.com/item?id=50436636",
+                "source": "news.ycombinator.com",
+                "summary": "Only an email so far, nothing official I could find. I figure if you didn&#x27;t get this email you are ok.<p>---<p>We are writing to inform you of a security incident at one of our vendors, Fireworks AI, that may impact you. For the latest on the Fireworks AI incident, see their official updates here.<p>Following an investigation by the Notion security team, we have determined that your workspace, [...], was among the &lt;1% of Notion workspaces that may have been affected by the Fireworks security incident. Some unattributable chat sessions with Notion AI may have been exposed in this incident. “Unattributable” means the chats weren&#x27;t labeled with who wrote them or which workspace they came from, and the transcripts did not contain tool call results. Beyond what’s in the chat transcript itself, there’s no information tying the chat back to your workspace, users, or company. No other data from within your workspace is affected.<p>This email explains what happened, what data of yours might be affected, what we’re doing to address this, and what we recommend to protect your data from this Fireworks AI incident.<p>What is Fireworks AI and how we used them: Fireworks is one of the most used global AI infrastructure platforms powering tens of thousands of customers and used by hundreds of thousands of developers. We used Fireworks for classification jobs to help customers understand their own AI usage through a feature in Notion called Insights, and we used them as a general inference provider to serve open-weight models inside our product. The Insights feature has been disabled as we investigate this incident, and we are no longer serving open-weight models through Fireworks.<p>What happened and how we addressed it: We learned from Fireworks about potential incidents earlier this month, and we shut down all connections to their systems out of an abundance of caution.<p>On November 6, Fireworks notified us that malicious actors may have accessed potential customer data. Our team immediately began another internal investigation. On November 8, Fireworks confirmed this new dataset for us.<p>Upon analysis of the new data, we discovered that it included unattributable Notion AI chat transcripts used for the Insights feature. Chats weren&#x27;t labeled with who wrote them or which workspace they came from, and the transcripts did not contain any tool call results. Beyond the words in the chat transcripts themselves, the data contained no information that could specifically identify your workspace, users, or company.<p>No other Notion data from your workspace is affected, and we continue to monitor this incident.<p>Recommended next steps for you: You can retrieve and review the impacted data securely inside your workspace. See below:<p>-   [...]<p>We recommend that you treat this data as if it were exposed. If anyone on your team might have pasted sensitive information into chats in Notion AI like passwords, API keys, or other credentials during this timeframe, please rotate them now.<p>You trust us with your life&#x27;s work in Notion, and that trust covers every partner we choose. In this critical time for global security, it is our mission to raise the standard for how your data is protected. You have our uncompromising commitment.<p>---<p>I downloaded the dataset and it&#x27;s a full chat for me.",
+                "date": "2026-11-10T06:00:48Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436636"
+              },
+              {
+                "title": "Show HN: Android and iOS games running offline in the browser",
+                "url": "https://phoam.app/demos",
+                "source": "phoam.app",
+                "summary": "Hi everyone. I’m a 19yo solo developer and I’m making a project called Phoam.<p>In middle school, I made a little games website for the people in my school, but it became surprisingly popular. Students would ask me to add mobile apps, and I remember searching how to run APKs online and not finding what I wanted.<p>I’ve always liked the idea that if software ran on one machine at some point, it should also run on another.<p>Apple dropped support for 32-bit apps many years ago, leaving tons of nostalgic games unplayable on modern iPhones. Some newer Android phones also no longer support 32-bit apps, meaning having an APK for an app is not enough to play it again.<p>I knew about projects like Wine and Ruffle that had made software run in a way it was never designed to, and one day I just decided to start my own engine!<p>Phoam runs supported Android APKs and early iOS IPAs in the browser. The apps’ original code runs locally on your device, so it isn’t streaming from another phone or computer. On an iPhone, you can add them to your home screen.<p>It’s still very early, and compatibility varies. The public demos are Replica Island and Explora-Ball, which I can legally share. You can try them at <a href=\"https:&#x2F;&#x2F;phoam.app&#x2F;demos\" rel=\"nofollow\">https:&#x2F;&#x2F;phoam.app&#x2F;demos</a> without an account. Uploading your own apps isn’t public yet, and using your own files would require the necessary rights.<p>Also worth saying, AI has helped a lot with the coding, but I’ve been directing the project and testing the results.<p>Which old Android or iOS game would you most want to play again?",
+                "date": "2026-11-10T05:49:45Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436566"
+              },
+              {
+                "title": "A sourced dictionary of how engineers pronounce 1,934 developer terms",
+                "url": "https://pronounce.renlab.ai/",
+                "source": "pronounce.renlab.ai",
+                "summary": "A sourced dictionary of how engineers pronounce 1,934 developer terms",
+                "date": "2026-11-10T05:44:16Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436528"
+              },
+              {
+                "title": "FLEY AI-Voce – a voice AI assistant you but can also control your PC and phone",
+                "url": "https://news.ycombinator.com/item?id=50436493",
+                "source": "news.ycombinator.com",
+                "summary": "FLEY AI-Voce - a voice AI assistant that will not only talk with : open links, websites, and programs, create files, presentations, write code, and even shut down and turn on your PC, work with a printer, and do just about anything.<p>Everything to automate and make your device, like a PC and phone, smart as a robot.<p>https:&#x2F;&#x2F;drtoolparadox.base44.app&#x2F;fley-ai<p>https:&#x2F;&#x2F;github.com&#x2F;AnonimusShamshiAlex&#x2F;FLEYAI-ANDROID<p>https:&#x2F;&#x2F;github.com&#x2F;AnonimusShamshiAlex&#x2F;FLEYAI<p>https:&#x2F;&#x2F;fleyai.netlify.app&#x2F;<p>FLEY AI-Voce is an open-source AI voice assistant project designed to control your computer (PC) rather than a smartphone.",
+                "date": "2026-11-10T05:37:27Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436493"
+              },
+              {
+                "title": "I don't want AI in my online search. What options do I have?",
+                "url": "https://theconversation.com/i-dont-want-ai-in-my-online-search-what-options-do-i-have-295875",
+                "source": "theconversation.com",
+                "summary": "I don't want AI in my online search. What options do I have?",
+                "date": "2026-11-10T05:33:17Z",
+                "points": 3,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436472"
+              },
+              {
+                "title": "Show HN: Calculators for token costs and Claude Code API budgets",
+                "url": "https://modelfold.ai/tools/claude-code-cost",
+                "source": "modelfold.ai",
+                "summary": "Show HN: Calculators for token costs and Claude Code API budgets",
+                "date": "2026-11-10T05:31:28Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436457"
+              },
+              {
+                "title": "90% of the models can do 90% of the work while best owns the turn",
+                "url": "https://myagentforge.ai/",
+                "source": "myagentforge.ai",
+                "summary": "90% of the models can do 90% of the work while best owns the turn",
+                "date": "2026-11-10T05:28:39Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436435"
+              },
+              {
+                "title": "Aipicks.ca – Using multi-sport AI models to find edges in table tennis",
+                "url": "https://aipicks.ca/",
+                "source": "aipicks.ca",
+                "summary": "Aipicks.ca – Using multi-sport AI models to find edges in table tennis",
+                "date": "2026-11-10T05:01:11Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436256"
+              },
+              {
+                "title": "Show HN: 3D Conformal Transformations via Geometric Algebra",
+                "url": "https://static.laszlokorte.de/conformal-3d/",
+                "source": "static.laszlokorte.de",
+                "summary": "Inspired by this great talk by Hamish Todd about Conformal Geometric Algebra [1] I felt the urge to play with those conformal transformations myself and to learn more about geometric algebra.<p>In the original talk Hamish shows many interactive visualizations to make a point about properties of conformal transformations and their representation via Geometric Algebra.<p>My goal was to reverse engineer these visualizations just from the snippets shown in the talk.<p>I find the result very satisfying to play around with. [2] As educational tool it provides some good intuition for conformal transformations and their composition.\nI hope some of you might enjoy it as well, especially after watching the original talk by Hamish Todd.<p>On the technical side it is built on Threlte (Svelte+ThreeJS) and mostly handwritten with AI only being used for trying and debugging some shader code performance optimizations.<p>1: <a href=\"https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=q3as9SGmDdw\" rel=\"nofollow\">https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=q3as9SGmDdw</a>\n2: <a href=\"https:&#x2F;&#x2F;static.laszlokorte.de&#x2F;conformal-3d&#x2F;\" rel=\"nofollow\">https:&#x2F;&#x2F;static.laszlokorte.de&#x2F;conformal-3d&#x2F;</a>",
+                "date": "2026-11-10T04:45:56Z",
+                "points": 1,
+                "comments": 0,
+                "hn_url": "https://news.ycombinator.com/item?id=50436157"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

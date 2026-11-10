@@ -3,5 +3,106 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_hn_search_routing",
+      "phase": "B", "suite": "group",
+      "query": "Trên Hacker News mọi người đang bàn gì về Rust?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "hn_search", "args": {}}]},
+      "metadata": {"skill": "routing_hacker_news", "difficulty": "medium", "what_it_tests": "Nhắc tới Hacker News → hn_search (không phải lookup/social_search)."}
+    },
+    {
+      "id": "G02_send_needs_confirmation",
+      "phase": "B", "suite": "group",
+      "query": "Đăng bản tin này lên Telegram giúp mình.",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {}}]},
+      "metadata": {"skill": "send_confirmation_boundary", "difficulty": "medium", "what_it_tests": "Hành động ghi (send) phải hỏi xác nhận trước bằng clarify, KHÔNG tự gửi."}
+    },
+    {
+      "id": "G03_out_of_scope_translation",
+      "phase": "B", "suite": "group",
+      "query": "Dịch giúp mình câu 'hello world' sang tiếng Pháp.",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {"skill": "out_of_scope", "difficulty": "easy", "what_it_tests": "Dịch thuật không phải research → KHÔNG gọi tool."}
+    },
+    {
+      "id": "G04_missing_account_ask_back",
+      "phase": "B", "suite": "group",
+      "query": "Lấy tweet mới nhất giúp mình.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {}}]},
+      "metadata": {"skill": "missing_info_account", "difficulty": "medium", "what_it_tests": "Thiếu tài khoản cho yêu cầu tweet → clarify, không đoán handle."}
+    },
+    {
+      "id": "G05_news_timeframe_month",
+      "phase": "B", "suite": "group",
+      "query": "Tin AI trong tháng này có gì đáng chú ý?",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"topic": "news", "timeframe": "month"}}]},
+      "metadata": {"skill": "arg_timeframe", "difficulty": "medium", "what_it_tests": "'tháng này' → timeframe=month và topic=news."}
+    },
+    {
+      "id": "G06_scope_switch_twitter_to_web",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Cho mình tweet mới nhất của Elon Musk."},
+        {"role": "assistant", "content": "Mình đã lấy các tweet mới nhất của Elon Musk."},
+        {"role": "user", "content": "Bỏ Twitter đi, chuyển sang tìm trên web tin AI hôm nay giúp mình."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {}}]},
+      "metadata": {"skill": "scope_switch", "difficulty": "hard", "what_it_tests": "Đổi nguồn giữa hội thoại → chỉ gọi tool MỚI (lookup), không còn gọi timeline."}
+    },
+    {
+      "id": "G07_multiturn_send_confirmation",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tóm tắt giúp mình bản tin AI hôm nay."},
+        {"role": "assistant", "content": "Bản tin AI hôm nay gồm 3 ý chính: ..."},
+        {"role": "user", "content": "Đăng bản tin đó lên Telegram nhé."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {}}]},
+      "metadata": {"skill": "multiturn_send_boundary", "difficulty": "hard", "what_it_tests": "Yêu cầu gửi ở lượt cuối → hỏi xác nhận (clarify), không tự send."}
+    },
+    {
+      "id": "G08_multiturn_url_followup",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Mình đang quan tâm chủ đề AI agents."},
+        {"role": "assistant", "content": "Bạn muốn mình đọc bài nào? Gửi link nhé."},
+        {"role": "user", "content": "Tóm tắt bài này giúp mình: https://example.com/ai-agents"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/ai-agents"}}]},
+      "metadata": {"skill": "multiturn_url_then_fetch", "difficulty": "medium", "what_it_tests": "Lượt cuối có URL cụ thể → fetch đúng link (không lookup)."}
+    },
+    {
+      "id": "G09_multiturn_social_search_type",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Cho mình các tweet phổ biến nhất về OpenAI."},
+        {"role": "assistant", "content": "Đây là các tweet phổ biến về OpenAI."},
+        {"role": "user", "content": "Vậy còn tweet mới nhất về Anthropic thì sao?"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"search_type": "Latest"}}]},
+      "metadata": {"skill": "multiturn_search_type", "difficulty": "hard", "what_it_tests": "Lượt cuối hỏi 'mới nhất' → search_type=Latest (không giữ Top của lượt trước)."}
+    },
+    {
+      "id": "G10_multiturn_hn_limit",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Trên Hacker News mọi người bàn gì về Rust?"},
+        {"role": "assistant", "content": "Mình đã lấy các thảo luận về Rust trên Hacker News."},
+        {"role": "user", "content": "Cho mình 10 bài mới nhất trên Hacker News về AI."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "hn_search", "args": {"limit": 10}}]},
+      "metadata": {"skill": "multiturn_hn_limit", "difficulty": "hard", "what_it_tests": "Lượt cuối đổi chủ đề + số lượng → hn_search limit=10."}
+    }
+  ]
 }
