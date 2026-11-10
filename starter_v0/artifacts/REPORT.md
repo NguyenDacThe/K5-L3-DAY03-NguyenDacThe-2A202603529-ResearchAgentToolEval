@@ -6,8 +6,12 @@
 
 ## Team
 
-- Team: VibeCode
+- Team: D8
 - Members:
+	- NguyenDacThe — 2A202603529
+	- TruongVanThong — 2A202603560
+	- NguyenQuocViet — 2A202603556
+	- NguyenVanHuy — 2A202603432
 - Provider/model: xkiro / mistralai/mistral-large-2512
 
 ---
@@ -63,14 +67,14 @@ Tool mới tự viết: chưa thực hiện ở mốc v1. Các tool bonus arXiv 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
 | v0 | baseline | Đo starter | — | 65.00% | `runs/v0_B_base_xkiro_20261110T103347177059.json` |
-| v1 | system_prompt.md | Hỏi clarify thay vì tự đoán khi thiếu tài khoản hoặc URL sẽ sửa R10/R11. | 65% | 72.22% | `runs/v1_B_base_xkiro_20261110T104702359334.json` |
+| v1 | system_prompt.md | Thiếu handle hoặc URL thì chỉ gọi clarify thay vì trả lời trực tiếp; kỳ vọng sửa R10/R11. | 65.00% | 80.00% | `runs/v1_B_base_xkiro_20261110T113403784272.json` |
 | v2 | Chưa thực hiện | | | | |
 | v3 | Chưa thực hiện | | | | |
 
 | Version | Passed / total | Measured cases | Provider errors | Routing | Arguments | Multiturn |
 |---|---|---:|---:|---:|---:|---:|
 | v0 | 13/20 | 20 | 0 | 85.00% | 65.00% | 66.67% |
-| v1 | 13/20 | 18 | 2 | 88.89% | 72.22% | 50.00% |
+| v1 | 16/20 | 20 | 0 | 90.00% | 80.00% | 66.67% |
 
 case_accuracy loại provider_error khỏi mẫu số. Không kết luận tăng chất lượng chỉ từ điểm này khi số measured_cases khác nhau.
 
@@ -90,11 +94,11 @@ Phân tích baseline v0. Nhãn case khác lỗi quan sát ở R03/R13: tool đú
 
 provider_error_cases=0 không chứng minh mọi API tool thành công: v0 có tool timeline trả JSONDecodeError. Cần kiểm tra tool_results riêng.
 
-v1 so với v0: cải thiện R13_parallel_web_and_tweets, M02_carryover_timeframe; hồi quy M05_correction_limit, M06_switch_tool.
+Run v1 gần nhất cải thiện R10_missing_handle và R11_missing_url: cả hai đều gọi đúng `clarify`. So với baseline, R13_parallel_web_and_tweets và M02_carryover_timeframe cũng PASS; M03_correction_handle và M06_switch_tool vẫn FAIL. Bốn case còn lỗi trong run v1 là R03 (query `AI tin tức nổi bật` thay vì `AI`), R12 (chưa gọi `clarify` để xác nhận gửi), M03 (dùng tên `Andrej Karpathy` thay vì handle `karpathy`) và M06 (vẫn gọi `social_search` sau yêu cầu chuyển sang web).
 
-Mỗi phiên bản mới chạy một lần; biến động ngoài R10/R11 chưa đủ để kết luận do thay đổi prompt.
+Run v1 trước đó có hai provider error nên không đủ 20 case đo được; run mới nhất đo đủ 20/20 và không có provider error. Case accuracy tăng từ 65.00% lên 80.00%; multiturn là 66.67%, bằng baseline. Đây là kết quả của một lần chạy lại, nên các cải thiện ngoài R10/R11 chưa thể khẳng định chắc chắn do thay đổi prompt.
 
-Kết luận v1: giả thuyết hỏi lại chưa được chứng minh. R10 không trả tool call; R11 lỗi API 409 duplicate request; R12 lỗi TypeError ở đường gọi provider. Vẫn 13/20 case đúng, multiturn giảm từ 66,67% xuống 50%. Cần xử lý/kiểm tra lại lỗi provider và cải tiến hướng dẫn clarify trong vòng tiếp theo.
+Kết luận v1: giả thuyết clarify-only được hỗ trợ bởi kết quả R10/R11 PASS trên run sạch. Còn 4/20 case fail, thuộc các lỗi quy ước query, xác nhận hành động, ánh xạ tên sang handle và chuyển tool; không gộp các sửa đổi này vào v1 để giữ mỗi version một giả thuyết.
 
 ## B3. Team Eval Cases
 
