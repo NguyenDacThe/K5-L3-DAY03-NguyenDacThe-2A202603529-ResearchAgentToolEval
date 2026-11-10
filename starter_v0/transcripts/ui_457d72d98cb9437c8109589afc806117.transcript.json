@@ -1,0 +1,54 @@
+{
+  "transcript_id": "ui_457d72d98cb9437c8109589afc806117",
+  "created_at": "2026-11-10T12:52:57",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "version": "v2",
+  "artifact_version": "v2+pe3752808d7fb+t338048f10a36",
+  "prompt_hash": "e3752808d7fbdefde8a6e46621e316146fbcedf008fc580adae238f6301396cd",
+  "tools_hash": "338048f10a368a8aaa95d2eca6c5b8fe0e93daebab1fa484d934c5dbbadc59e3",
+  "ui_excluded_tools": [
+    "send"
+  ],
+  "turns": [
+    {
+      "user": "bạn hãy viết 1 đoạn code làm 1 bài toán",
+      "version": "v2",
+      "provider": "openrouter",
+      "model": "openai/gpt-4o-mini",
+      "started_at": "2026-11-10T12:54:21",
+      "status": "answered",
+      "assistant_text": "Bạn có thể cho tôi biết bài toán cụ thể mà bạn muốn giải quyết không? Ví dụ, bạn muốn làm một bài toán về tính toán, xử lý chuỗi, hay một vấn đề nào khác?",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Bạn có thể cho tôi biết bài toán cụ thể mà bạn muốn giải quyết không? Ví dụ, bạn muốn làm một bài toán về tính toán, xử lý chuỗi, hay một vấn đề nào khác?",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T12:54:24"
+    },
+    {
+      "user": "tính tổng dãy từ 1 đến 1000",
+      "version": "v2",
+      "provider": "openrouter",
+      "model": "openai/gpt-4o-mini",
+      "started_at": "2026-11-10T12:56:06",
+      "status": "answered",
+      "assistant_text": "Dưới đây là đoạn code Python để tính tổng dãy số từ 1 đến 1000:\n\n```python\n# Tính tổng dãy số từ 1 đến 1000\ntotal_sum = sum(range(1, 1001))\nprint(\"Tổng dãy số từ 1 đến 1000 là:\", total_sum)\n```\n\nKhi bạn chạy đoạn code này, nó sẽ in ra tổng của dãy số từ 1 đến 1000.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Dưới đây là đoạn code Python để tính tổng dãy số từ 1 đến 1000:\n\n```python\n# Tính tổng dãy số từ 1 đến 1000\ntotal_sum = sum(range(1, 1001))\nprint(\"Tổng dãy số từ 1 đến 1000 là:\", total_sum)\n```\n\nKhi bạn chạy đoạn code này, nó sẽ in ra tổng của dãy số từ 1 đến 1000.",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T12:56:09"
+    }
+  ],
+  "updated_at": "2026-11-10T12:56:09"
+}

@@ -101,7 +101,12 @@ def normalize_value(value: Any) -> Any:
     if isinstance(value, str):
         return value.strip().lower()
     if isinstance(value, list):
-        return sorted(normalize_value(item) for item in value)
+        # Tool arguments can contain source objects; dictionaries cannot be sorted
+        # directly. Retain the scorer's order-insensitive list comparison.
+        return sorted((normalize_value(item) for item in value),
+                      key=lambda item: json.dumps(item, ensure_ascii=True, sort_keys=True))
+    if isinstance(value, dict):
+        return {key: normalize_value(item) for key, item in value.items()}
     return value
 
 

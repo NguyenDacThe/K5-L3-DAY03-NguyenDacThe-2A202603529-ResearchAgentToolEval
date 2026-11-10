@@ -1,0 +1,1798 @@
+{
+  "run_id": "v4-local-qwen7b_B_base_ollama_20261110T142159764022",
+  "version": "v4-local-qwen7b",
+  "artifact_version": "v4-local-qwen7b+pcaaefe0840af+t05ed0b958342",
+  "prompt_hash": "caaefe0840af23f47b3768dba6f44b8a430d15f5c17b8635c4aa7f236bfbc3d6",
+  "tools_hash": "05ed0b958342c51f39aab7e84df1927f695f95b5dad1f8ade96aa1653cac35cd",
+  "phase": "B",
+  "suite": "base",
+  "provider": "ollama",
+  "model": "qwen2.5:7b",
+  "system_prompt": "artifacts\\system_prompt_v4_local.md",
+  "tools": "artifacts\\versions\\v3\\release\\tools.yaml",
+  "eval_cases": "data\\eval_base.json",
+  "dataset_id": "day04_v2_research_base",
+  "dataset_role": "base",
+  "description": "Core eval cho research agent: routing đúng tool + đúng args, hỏi lại khi thiếu (ask_user), xác nhận trước khi gửi, và xử lý câu ngoài phạm vi / không cần tool. Chấm trên tool_calls + args (subset). KHÔNG sửa file này — chỉ thêm case vào eval_group.json.",
+  "generated_at": "2026-11-10T14:21:59",
+  "summary": {
+    "total_cases": 20,
+    "measured_cases": 20,
+    "provider_error_cases": 0,
+    "passed_cases": 11,
+    "case_accuracy": 0.55,
+    "tool_routing_accuracy": 0.85,
+    "argument_accuracy": 0.55,
+    "multiturn_accuracy": 0.6667,
+    "failure_counts": {
+      "wrong_tool": 3,
+      "wrong_arg_value": 3,
+      "missing_info": 2,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 6,
+      "missing_tool_call": 3
+    }
+  },
+  "results": [
+    {
+      "id": "R01_user_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_user_tweets_name_to_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Tin CỦA một người nổi tiếng → map tên Sam Altman thành handle sama rồi gọi get_user_tweets."
+      },
+      "input": "Tweet mới nhất của Sam Altman là gì?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "SamAltman",
+              "limit": 1
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "screenname: expected 'sama', got 'SamAltman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "SamAltman",
+            "limit": 1
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "JSONDecodeError",
+            "message": "Expecting value: line 1 column 1 (char 0)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "R02_search_tweets_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_search_tweets",
+        "difficulty": "easy",
+        "what_it_tests": "Tweet theo CHỦ ĐỀ → search_tweets, không phải get_user_tweets."
+      },
+      "input": "Mọi người đang bàn gì về GPT-5 trên Twitter?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "GPT-5",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "GPT-5",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "GPT-5",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "Chat GPT Plus🪸",
+                "summary": "Chat GPT Plus🪸\n\n07 วัน 𓏔 50 บาท\n┈┈┈┈┈┈┈\n30 วัน 𓏔 179 บาท ⚠️\n꒰ รีnวิตเหลือ 109 บาท ꒱\n\nเมลร้าน หาร5 เมลปิดรับเคลม\nโมเดล GPT5,GPT4o,GPT6.6\n\nสั่งซื้อ ➡️ https://t.co/taYzZ8AbDh\n “thx u for Oder”\n\n#หารchatgpt #หารแชทจีพีที \n#หารchatgptplus นจกแกไไน https://t.co/czBtCE5eRt",
+                "url": "https://x.com/memeuaing/status/2120052990761689243",
+                "source": "@memeuaing",
+                "date": "Tue Nov 10 07:16:36 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "2"
+                }
+              },
+              {
+                "title": "Test-Time Compute Scales Better with Parallel Agent Teams : https://t.co/zWpR8LCtj5",
+                "summary": "Test-Time Compute Scales Better with Parallel Agent Teams : https://t.co/zWpR8LCtj5\n\n\"Test-Time Compute Scales Better with Parallel Agent Teams\nJunlin WangHaozhe ChenAng LiRahul ChalamalaZhuang Liu[[[[\nAbstract\nTest-time scaling improves the performance of a fixed model by spending more computation at inference. There are two common ways to spend it on agents when a verifier can score every attempt. Best-of-N sampling runs many independent agents and keeps the best result but saturates quickly. One large team of collaborating agents can score higher but stops improving as it grows. Can we get the best of both? Our method, parallel agent teams, does so by sampling many small teams in parallel and keeping the best team’s result. We test it on 12 long-horizon tasks from GPU kernels and formal proofs to exploit development. With a 27B model and a budget of 100 agents, parallel teams of ten beat parallel agents on 10 of 12 tasks and beat one team of 100 on all four tasks where we ran such large teams. At equal dollar cost the same parallel teams beat a frontier model on half the tasks. A simple statistical model shows that individual agents lose because their many samples have a low mean and that one large team loses because a single sample gets no gain from variance. Sampling many small teams in parallel balances a high mean with the gain from variance. Parallel agent teams thus offer a more effective way to scale test-time compute.\n1Introduction\n📷Figure 1:Sample small teams, not agents or one big team. (a) Three ways to spend the same agents. A verifier keeps the best solution. (b) Qwen3.8-27B on four tasks. Parallel agents (blue) flatten quickly, one big team (green) rises and falls with its size, and parallel teams of ten (orange) keep improving. Brackets give the gain of parallel teams over each baseline at the largest budget both reach.\nTest-time compute lets a fixed pre-trained model do better by spending more computation at inference (Snell et al., 2024; Wu et al., 2025). An ideal method would turn more compute into better results steadily. We study tasks where a verifier can score every attempt and only the best solution matters. Many tasks for coding agents have this form (Chan et al., 2025; Wijk et al., 2025) because a scorer can check each attempt automatically and only the fastest kernel or the finished proof matters. On such tasks there are two common ways to spend more compute on agents. The first is best-of-N sampling, one of the strongest methods when a verifier is available (Chen et al., 2021; Cobbe et al., 2021; Li et al., 2022; Brown et al., 2024). It runs N independent agents and keeps the one with the highest score. Yet best-of-N over individual agents saturates quickly. In our experiments, 50 agents already reach 81% to 100% of the gain that 100 agents reach.The second way is to let more agents work together on the task as one team. Multi-agent systems split the work among agents with different roles (Hong et al., 2024; Qian et al., 2024; Wu et al., 2023), and recent work grows such teams to hundreds or thousands of agents (Qian et al., 2025). A larger team does not give more samples to select from. It changes a single sample, and its score does not rise steadily with its size (Qian et al., 2025; Kim et al., 2025). Large groups of people and of language models tend to converge on one solution and lose the diversity that exploration needs (Lazer and Friedman, 2007; Wu et al., 2019; Weng et al., 2025).Figure 2:Parallel teams beat parallel agents on 10 of 12 tasks at 100 agents. Qwen3.8-27B parallel agents (blue) and parallel teams of ten (orange). Brackets give the teams’ gain at the largest budget both reach.\nEach approach has one half of what we need. Best-of-N takes advantage of the variation across samples. A team lets its agents work together and reach better performance more efficiently. We introduce parallel agent teams, which combine the two by applying best-of-N to independent small teams of collaborating agents (Figure 1a). Each team is a small group of agents that share a forum. At the same budget of agents, parallel teams score higher than both parallel agents and one big team and keep improving as the budget grows (Figure 1b). Averaged over 12 tasks, parallel teams of ten score 10% higher than parallel agents at a total budget of 10 agents and 27% higher at a total budget of 100 agents. At 100 agents, ten teams of ten beat one team of 100 by 8% to 30%. At equal dollar cost, teams of a 27B model also beat the frontier model GPT-5.6-sol on 4 of 8 tasks.A simple statistical model of best-of-N explains why parallel small teams win. The expected best of several samples is the mean score of one sample plus a gain from variance, which grows with the number of samples the budget buys. Parallel agents collect the largest gain from variance because they draw the most samples, but each agent has a low mean. One big team has a high mean, but it is a single sample and wastes the gain from variance, and a larger team does not guarantee a higher mean. Parallel small teams balance the two. Each team has a much higher mean than an agent, and several teams still collect most of the gain from variance. They also keep improving as the budget grows. At a given budget they draw fewer samples than parallel agents because each team costs several agents, so their best-of-N curve is still on its steep early part, where each additional sample raises the best result the most.Collaboration raises the mean score of each sample, and sampling turns the variance across samples into gains. Parallel agent teams get both and keep improving where best-of-N over individual agents has saturated, offering a simple way to scale test-time compute further.\n2Parallel Agent Teams\nWe first describe best-of-N sampling and how we measure it, and then agent teams. We then introduce parallel agent teams, which combine the two.\nBest-of-N sampling.\nWe study tasks with a verifier that scores any candidate solution so that the best of several candidates can be found without human judgment. For a fixed model, drawing more independent responses and keeping the best steadily improves performance (Brown et al., 2024). Let X be the score of one sample, such as one agent, defined as the score of its best verified submission. We report the expected best of N independent samples:𝔼⁡[max1≤i≤N⁡Xi].(1)We estimate it from a pool of L runs by taking every subset of N runs and averaging its best score over all (LN) subsets. With the scores sorted as v(1)≤⋯≤v(L), this average is ∑i=NLv(i)​(i−1N−1)/(LN). One pool thus gives the whole curve from N=1 to N=L. Take five runs that score 2, 4, 5, 7 and 9. Their expected best is 5.4 for one run (the mean), 7.1 for two and 9 for all five.\nAgent teams.\nInstead of working alone, agents can work together as a team on the same task. Past work shows that such teams can produce better results than a single agent (Li et al., 2023; Du et al., 2024; Hong et al., 2024; Qian et al., 2024; Chen et al., 2024). We mainly study flat teams, in which peers share progress through a common log or memory (Park et al., 2026; Qu et al., 2026). Each agent has its own sandbox and context but shares a forum where any agent can post and read notes at any time. There are no roles, no manager and no assigned work. A team’s score is the best verified submission of any member (Appendix E). Section 6 studies an alternative team architecture in which a manager assigns the work.\nParallel agent teams.\nParallel agent teams combine the two by applying best-of-N to independent teams (Figure 1a), so a sample is one team. We measure compute as a budget of B agents that each run for the same fixed time. It buys N=B/k teams of size k. Parallel agents (k=1) and one big team (k=B) are the two ends of this family, and parallel teams lie in between. We use teams of ten unless stated otherwise and study the team size in Section 3.1.Table 1:The 12 tasks. Higher is better for every metric.TaskBenchmarkDomainMetricDabic Gravity InversionEdgeBenchGeophysicspoints 0–100Borden Source InversionEdgeBenchHydrogeologypoints 0–100Graph Node ClassificationEdgeBenchMachine learningpoints 0–100Ad Placement OptimizationEdgeBenchHeuristic optimizationpoints 0–100Carleson FormalizationEdgeBenchMath formalizationpoints 0–100MoE Load BalanceMLS-BenchML systemsreward 0–1Active LearningMLS-BenchMachine learningreward 0–1Browser ExploitExploitBenchCybersecurityladder 0–16KDA Chunk ForwardKernelBenchGPU kernel optimization1/latencyKimi-Linear DecodeKernelBenchGPU kernel optimization1/latencySwinMLP BF16KernelBench-VerifiedGPU kernel optimizationspeedupMultiscale CantileverTopOptStructural designCref/C\n\n3Parallel Small Teams Beat Both\nFigure 3:Averaged over 12 tasks, parallel teams score higher and keep improving for longer. Qwen3.8-27B parallel agents (blue) and parallel teams of ten (orange). (a) Expected best score normalized by that of ten agents. The gap widens with the budget. (b) Parallel teams gain more from each added agent.\n\nSetup.\nWe use 12 long-horizon optimization tasks from six benchmarks (ByteDance Seed, 2026; Lyu et al., 2026; Lee and Brumley, 2026; Elliot Arledge, 2026; Meta FAIR, 2026; Ouyang et al., 2025; Chen et al., 2025). They span nine domains from GPU kernels to formal mathematics (Table 1). In each task an agent gets a description, a working environment and a scorer it can call and then improves its submission for 12 hours. Each agent runs in the Codex harness (OpenAI, 2025) inside its own sandbox. Our main model is Qwen3.8-27B (Qwen Team, 2026). Section 5 repeats the comparison with a stronger model, DeepSeek V4.1 Flash (DeepSeek-AI, 2026), and Section 3.4 compares against GPT-5.6-sol (OpenAI, 2026). Each task has about 100 independent runs and 10 teams of ten, and four tasks also have single teams of 16 to 100 agents (Appendix D).\n3.1Better than one big team\nFigure 1b adds one team of B agents on the four tasks where we ran one big team. Its score rises at first but not steadily. From 64 to 100 agents it drops on all four tasks. At 100 agents, ten teams of ten beat one team of 100 on all four tasks by 8% to 30%, and on two tasks one team of 100 even scores below the best of 100 independent agents.Figure 4 holds the budget at 100 agents and varies the team size. The best size lies in between on every task. Ten teams of ten score highest on three tasks, and two teams of 50 on Graph Node Classification, where both reached the maximum score. Section 4 explains why both ends lose.Figure 4:At a fixed budget, the best team size lies in between. 100 Qwen3.8-27B agents form 100/k teams of size k. The ends are parallel agents (k=1; blue) and one big team (k=100; green).\n\n3.2Better than parallel agents\nFigure 2 compares parallel agents with parallel teams of ten on each task. At a budget of 50 agents, the best of five teams beats the best of 50 agents on 11 of 12 tasks. At 100 agents, the best of ten teams beats the best of 100 agents on 10 of 12 tasks (Table 4). The gains are largest where individual agents rarely succeed. On Carleson Formalization the best of 100 agents scores 19.0 out of 100 while the best team scores 54.8. Averaged over the 12 tasks, parallel teams score 10% higher than parallel agents at a total budget of 10 agents and 27% higher at 100 agents (Table 4). Parallel agents beat parallel teams only on Kimi-Linear Decode and, by a small margin, on Active Learning.\n3.3Slower saturation than parallel agents\nParallel agents improve monotonically as compute grows because an extra sample can only raise the best score, but they saturate quickly. At 20 agents, each task has already reached 60% to 94% of the gain that about 100 agents bring. Parallel teams keep improving for longer (Figure 3b). From 10 to 20 agents each extra agent adds 1.27% to the score of parallel teams but only 0.64% to the score of parallel agents. The gap between the two methods therefore widens as the budget grows.\n3.4Beating a frontier model\nFigure 5:At equal cost, parallel teams of a 27B model overtake a frontier model. Qwen3.8-27B parallel agents (blue) and parallel teams of ten (orange), priced by GPU time, against GPT-5.6-sol agents (green), priced by tokens. The dotted line marks the price of one GPT-5.6-sol agent.\nWe also compare teams with GPT-5.6-sol at equal dollar cost (Figure 5). A Qwen3.8-27B team of ten costs about as much as one or two GPT-5.6-sol agents (Appendix J). On Carleson Formalization one GPT-5.6-sol agent beats one Qwen3.8-27B team, yet for the price of five GPT-5.6-sol agents, eight Qwen3.8-27B teams reach 52.0 against 47.9. Across the eight tasks with at least five GPT-5.6-sol runs, Qwen3.8-27B teams beat five GPT-5.6-sol agents at the same price on four. GPT-5.6-sol scores high but varies little from run to run. More GPT-5.6-sol runs therefore add little while the best of several Qwen3.8-27B teams keeps climbing.\n4Why Do Parallel Teams Win?\nParallel teams beat both common approaches. They beat parallel agents although at the same budget they draw ten times fewer samples, since a team of ten costs ten agents. They beat one big team, which puts the whole budget into a single sample. A simple statistical model of best-of-N explains both results.\n4.1A statistical model\nAssume that the score X of one sample follows a normal distribution 𝒩⁡(μ,σ2) and that samples are independent. The expected best of N samples is then μ+σ​aN. Here aN is the expected maximum of N standard normal variables, and aN≈2​ln⁡N for large N (Fisher and Tippett, 1928; Gnedenko, 1943, Appendix A;). Now let each sample cost c agents so that a budget of B agents buys N=B/c samples. The expected best is thenV⁡(B)≈μ+σ​2​ln⁡(B/c).(2)The three numbers affect the curve at different rates. The mean μ adds the same amount at every budget. The standard deviation σ multiplies the gain from variance. This gain grows only as 2​ln⁡N. The cost c cuts the number of samples from B to B/c but lowers the gain from variance by only about σ​ln⁡c/2​ln⁡B. A tenfold cost therefore matters little once the budget is large. For teams of size k the cost is c=k, and the mean μk and standard deviation σk depend on k:Vk​(B)≈μk+σk​2​ln⁡(B/k).(3)The first term is the mean of one team and the second is the gain from variance when sampling B/k teams. Parallel agents (k=1) and one big team (k=B) are the two ends of this family.\n4.2One big team wastes variance\nParallel sampling takes advantage of the variance of scores. By Equation 2, more samples raise the expected best by σ​2​ln⁡N, so performance scales with compute at a rate set by the standard deviation σ. Parallel agents and parallel teams both draw more samples as the budget grows and collect this gain. One big team wastes it. It is a single sample, so 2​ln⁡(B/k)=0 and its expected score is just its mean μB, whatever its standard deviation. A larger budget then helps one big team only if a larger team has a higher mean, and a larger team does not guarantee that. From 64 to 100 agents the mean of one team falls on all four tasks where we ran such teams (Section 3.1). One big team therefore loses to parallel teams, which raise the mean and still keep most of the gain from variance.\n4.3Parallel teams balance mean and variance\nFigure 6:How the mean, standard deviation and cost of a sample shape the best-of-N curve. Expected best score in the statistical model for four sampling methods. A higher mean shifts the curve up, a larger standard deviation makes it rise faster, and a higher cost delays its start.\nParallel teams balance the gain from the mean and the gain from variance. Parallel agents collect the largest gain from variance, but one agent has a low mean. A team of ten raises the mean but draws fewer samples and so gives up some gain from variance. By Equation 2, an expensive method (μ2,σ2) at cost c beats a cheap method (μ1,σ1) at cost 1 at budget B whenμ2+σ2​2​ln⁡(B/c)>μ1+σ1​2​ln⁡B.(4)With equal standard deviations, drawing B/c samples instead of B loses only about σ​ln⁡c/2​ln⁡B, and this loss shrinks as the budget grows. A higher mean counts in full at every budget. At a budget of 200, a mean gain of only 0.88​σ pays for a 10× cost. Figure 6 shows how the mean, standard deviation and cost each change the curve. A method at ten times the cost can still win through a higher mean or a higher standard deviation.\n4.4Testing the statistical model\nWe now check the statistical model against our measurements. On Graph Node Classification, a team of ten scores 79.0 on average and an agent 52.1 (Table 2). With the agents’ standard deviation σ=11.8, the team’s mean is 2.3​σ higher. Equation 4 requires only 1.4​σ at a budget of 100 agents. Scores on this task and on Browser Exploit are close to normal, and the fitted normals predict the measured curves well (Figure 7).Table 2 extends the check to all 12 tasks. A team’s mean exceeds an agent’s by 0.5​σ to 4.4​σ on every task, and the statistical model predicts the sign of the teams’ gain at 100 agents on 9 of 12. It overestimates the best of many agents where agent scores are far from normal, as with the long lower tail of failed runs on Ad Placement Optimization (W=0.66) or the pile-up below a ceiling on KDA Chunk Forward (Appendix B). The statistical model also explains the frontier model’s flat curve: a high mean with a small standard deviation leaves little for parallel sampling to gain.Figure 7:The statistical model predicts the measured curves when scores are close to normal. Left of each task: score distributions of one Qwen3.8-27B agent (blue) and one team of ten (orange) with normal fits. Right: predicted (solid) and measured (dotted) expected best score.\nTable 2:The statistical model on all 12 tasks. Mean μ and standard deviation σ of one Qwen3.8-27B agent and one team of ten. W is the Shapiro–Wilk statistic (Shapiro and Wilk, 1965), which equals 1 for a normal sample. Gain is the expected best of 10 teams over that of 100 agents. Italic marks a predicted gain with the wrong https://t.co/PufJlukS2D agentOne team of tenGain at 100 agentsTaskμσWμσWpredictedmeasuredDabic Gravity Inversion9.58.60.7922.35.40.73-1.4%+4.6%Borden Source Inversion49.118.90.9676.519.50.93+10.5%+22.1%Graph Node Classification52.111.80.8979.08.50.96+12.7%+17.0%Ad Placement Optimization62.017.90.6674.31.80.99-28.0%+0.7%Carleson Formalization3.54.50.7823.215.70.93+222.7%+187.7%MoE Load Balance0.5660.1460.800.6430.2220.59+5.7%+9.2%Active Learning0.4510.0830.700.5300.0150.87-15.9%-1.6%Browser Exploit3.750.750.825.400.920.90+20.8%+16.7%KDA Chunk Forward7.273.270.9313.121.610.96+0.8%+39.8%Kimi-Linear Decode0.7240.7120.831.3340.6460.92-7.2%-7.9%SwinMLP BF163.581.500.976.741.020.96+13.2%+32.5%Multiscale Cantilever7.812.580.9111.600.120.77-17.5%+1.7%\n\n4.5Fewer samples, steeper gains\nThe same statistical model explains why teams scale better. The best-of-N curve rises fastest at small N and flattens as N grows. At a given budget an expensive method has drawn few samples and still sits on the steep part of its curve while a cheap method is already on the flat part. Differentiating Equation 2 gives the return to one more agent of budget, σ/(B​2​ln⁡(B/c)). This return grows with the cost c. At 20 agents the statistical model gives a team of ten (N=2) a marginal return ln⁡20/ln⁡2≈2.1 times that of an agent (N=20) at equal standard deviation. The measured ratio is 1.27% to 0.64% (Figure 3b). Earlier work observes a trade-off between the quality and the quantity of samples at equal compute (Brown et al., 2024; Snell et al., 2024; Wu et al., 2025). Our statistical model makes this trade-off precise for best-of-N.\n5Other Ways to Spend Compute\nFigure 8:Two agents for 6 hours beat one agent for 12 hours. Qwen3.8-27B on Graph Node Classification. (a) Expected best score against agent-hours. (b) A longer session barely shifts the score distribution, while a team of two at the same cost shifts it to the right.\n(a) Expected best score at equal agent-hours(b) Score distributions and normal fitsEquation 4 applies to parallel sampling with any way of producing a sample. We use it to evaluate two other choices, a longer session for each agent and a different model.\nLonger sessions.\nInstead of forming a team we can let each agent work longer. A 12-hour agent costs as much as a team of two agents that each work 6 hours (Figure 8, Appendix G). Longer sessions barely raise the mean. On Graph Node Classification an agent’s mean score rises only from 52.0 at 6 hours to 52.7 at 12, in line with the slowdown of long agent sessions (Liu et al., 2026). By Equation 4, doubling the cost pays off at this budget only if the mean rises by about 3.4 points. The 12-hour agents therefore lose even to plain best-of-N over 6-hour agents. A team of two spends the same hours on two approaches, raises the mean by 5.4 points and beats both.\n\"",
+                "url": "https://x.com/arnaudmercier/status/2120052726562255029",
+                "source": "@arnaudmercier",
+                "date": "Tue Nov 10 07:15:33 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "13"
+                }
+              },
+              {
+                "title": "大家用不了claude订阅，想用中转的可以来我这里，",
+                "summary": "大家用不了claude订阅，想用中转的可以来我这里，\nGpt，Claude、gpt image 模型都有，量大可以更优惠。\n\n网址：https://t.co/XiVL4TPIwV\n\n评论区留言，先给你们安排5刀的体验额度。\n\n想当代理的可以私我开反佣。",
+                "url": "https://x.com/0xJJbone/status/2120051807762485415",
+                "source": "@0xJJbone",
+                "date": "Tue Nov 10 07:11:54 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "13"
+                }
+              },
+              {
+                "title": "Before the call, Agesic holds the most the request could cost: max_tokens at the model's price, plus our 5% fee. If your",
+                "summary": "Before the call, Agesic holds the most the request could cost: max_tokens at the model's price, plus our 5% fee. If your balance or caps can't cover it, max_tokens is lowered or the call is refused.\n\nAfter the model answers, you pay for the tokens it used. Here, openai/gpt-5-mini read 1,200 tokens and wrote 400, so the provider cost was $0.0011, plus a $0.000055 fee, $0.001155 in total. The unused hold goes back to your balance.\n\nRead the billing docs → https://t.co/Oe5eEUNjeh",
+                "url": "https://x.com/useagesic/status/2120051805250109714",
+                "source": "@useagesic",
+                "date": "Tue Nov 10 07:11:53 +0000 2026",
+                "metrics": {
+                  "favorites": 2,
+                  "retweets": 0,
+                  "views": "97"
+                }
+              },
+              {
+                "title": "https://t.co/7BVnhvgttY",
+                "summary": "https://t.co/7BVnhvgttY",
+                "url": "https://x.com/TanveerDhool/status/2120051697598820574",
+                "source": "@TanveerDhool",
+                "date": "Tue Nov 10 07:11:28 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "25"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R03_web_news_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_web_news",
+        "difficulty": "medium",
+        "what_it_tests": "Tin thời sự trên web → web_search topic=news, timeframe=day (hôm nay)."
+      },
+      "input": "Tin tức AI hôm nay có gì nổi bật?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI hôm nay",
+              "timeframe": "day",
+              "topic": "news"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "query: expected 'AI', got 'AI hôm nay'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI hôm nay",
+            "timeframe": "day",
+            "topic": "news"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI hôm nay",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Tỷ giá USD hôm nay (10-11): Đồng đô la Mỹ (USD) suy yếu",
+                "url": "https://www.qdnd.vn/kinh-te/tin-tuc/ty-gia-usd-hom-nay-10-11-dong-usd-suy-yeu-1063935",
+                "source": "qdnd.vn",
+                "summary": "Đồng USD giảm giá so với các đồng tiền chủ chốt, trong đó có đồng EUR và đồng yên Nhật Bản, trong phiên giao dịch ngày thứ Hai, khi những lo ngại về nguy cơ xung đột tại Iran leo thang dịu bớt, thúc đẩy giới đầu tư chuyển dòng vốn trở lại các tài sản có mức độ rủi ro cao hơn, sau đợt bán tháo cổ phiếu liên quan đến trí tuệ nhân tạo (AI) trong tuần trước. [...] Ông Diaz-Alvarez cho rằng: “Thị trường đang phần nào đánh giá thấp tác động của cuộc bầu cử giữa nhiệm kỳ tại Mỹ đối với nền kinh tế nước này. Đầu tư vào lĩnh vực AI đã đóng góp đáng kể vào kết quả tăng trưởng kinh tế Mỹ. Do đó, những thay đổi lớn về chính trị tại Mỹ, dù chỉ ở mức độ nhất định, cũng có thể tác động tiêu cực đến dòng vốn đầu tư này”. [...] Trên Phố Wall, các chỉ số chứng khoán chủ chốt đồng loạt tăng điểm trong phiên giao dịch, dẫn đầu là Nasdaq, chỉ số có tỷ trọng lớn cổ phiếu công nghệ, sau đợt bán tháo mạnh trong tuần trước.",
+                "score": 0.30735803
+              },
+              {
+                "title": "AI Thực chiến 2026 ra mắt VTV2, Techcombank hỗ trợ học bổng 1 triệu USD | Sky Tin",
+                "url": "https://tin.skydoor.net/news/nhanh-ngan-hang-tai-chinh-ngan-hang-ai-thuc-chien-mua-2-len-song-8424318",
+                "source": "tin.skydoor.net",
+                "summary": "Bỏ qua điều hướng\n\nSkydoor\n\nSky Tin - Tin tức địa phương toàn cầu 24h mới nhất!\n\nXem tin theo cách của bạn >>\n\n\n\n# AI Thực chiến 2026 ra mắt VTV2, Techcombank hỗ trợ học bổng 1 triệu USD\n\nTối 5/11, tập đầu tiên của chương trình AI Thực chiến 2026 đã chính thức phát sóng trên kênh VTV2, đánh dấu khởi đầu cuộc thi giữa 100 đội xuất sắc nhất, được lựa chọn từ gần 1.000 hồ sơ của cộng đồng người Việt trong nước và toàn cầu, để tranh tài.\n\nĐọc tin gốc tại tuoitre.vn → [...] ## Tin tức Tài chính - Ngn hàng mới nhất hôm nay\n\n[](\n\n### Sau thành công tại Singapore, Techcombank tiếp tục tìm kiếm nhn tài toàn cầu tại London\n\n41 phút trước–tuoitre.vntuoitre.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### VietinBank kết nối doanh nghiệp FDI: Tìm đối tác, đón cơ hội đầu tư\n\n41 phút trước–tuoitre.vntuoitre.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Sinh viên khó khăn và gia đình hào hứng đón nhận tin vui\n\n1 giờ trước–phunuvietnam.vnphunuvietnam.vn\n\nXem tóm tắt nhanh\n\n[]( [...] [](\n\n### Nhìn từ dòng tiền 3 doanh nghiệp bất động sản: Tiền nghìn tỷ, sức khỏe tài chính ra sao?\n\n1 giờ trước–phunuvietnam.vnphunuvietnam.vn\n\nXem tóm tắt nhanh",
+                "score": 0.28150436
+              },
+              {
+                "title": "EMP của ZEROBASEONE, hôm nay (10 tháng) hợp tác với Dayu phát hành ca khúc mới 'OFF script' | STARNEWS",
+                "url": "https://www.starnewskorea.com/vi/music/2026/11/10/2026111011132332332",
+                "source": "starnewskorea.com",
+                "summary": "\\ Translated by AI\n\n# EMP của ZEROBASEONE, hôm nay (10 tháng) hợp tác với Dayu phát hành ca khúc mới 'OFF script'\n\nNgày phát:\n\nKim Noeul\n\nThêm vào nguồn ưu tiên\n\n\\Nội dung này được dịch bằng AI.Xem bản gốc\n\nEMP của ZEROBASEONE /ảnh=Wakeone\n\nĐơn vị EMP của nhóm ZEROBASEONE (ZEROBASEONE) bước vào một thử thách táo bạo thông qua ca khúc mới. [...] © STARNEWS. Все права защищены. Копирование и распространение запрещено\n\n\\Nội dung này được dịch bằng AI.Xem bản gốc\n\n## Tin đề xuất\n\n## Lựa chọn biên tập\n\n## Tin giải trí mới nhất\n\nAD\n\n \n\n  STARNEWS\n \n\n  STARPOLL [...] [### Caster Yang Dong-seok công bố kếtbất ngờ trong lúc bình luận trực tiếp \"Gặp được người thn yêu\"[Star Issue]](/vi/star/2026/11/10/2026111009580447137)Caster thể thao Coupang Play Yang Dong-seok sắp kết hôn. Yang Dong-seok đã công bố tin kết hôn thông qua tài khoản mạng xã hội (SNS) của mình vào ngày 9 vừa qua, nói rằng: \"Những ai xem trực tiếp hôm qua chắc đã biết trước, nhưng tôi đã gặp được người thn yêu và sắp kết hôn. Tôi đã gào lên vô số bàn thắng trong lúc bình luận trực tiếp, nhưng",
+                "score": 0.31906885
+              },
+              {
+                "title": "Tuần lễ AI 2026 tại Israel tập trung vào ứng dụng trí tuệ nhân tạo và những thách thức an ninh | Sky Tin",
+                "url": "https://tin.skydoor.net/news/ai-sieu-tri-tue-tuan-le-ai-2026-tai-israel-tap-trung-vao-ung-dung-tri-tue-8425065",
+                "source": "tin.skydoor.net",
+                "summary": "Xem tóm tắt nhanh\n\n## Tin tức AI - Siêu Trí Tuệ mới nhất hôm nay\n\n[](\n\n### Nvidia sẽ ra sao nếu ông Jensen Huang rời ghế CEO?\n\n3 giờ trước–doanhnhanvn.vndoanhnhanvn.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Meta triển khai AI xác minh độ tuổi người dùng trên toàn cầu\n\n4 giờ trước–baoquocte.vnbaoquocte.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Alice Huang mất nhiều năm tiếp cận CEO Nvidia Jensen Huang\n\n8 giờ trước–vietnamnet.vnvietnamnet.vn\n\nXem tóm tắt nhanh\n\n[]( [...] Bỏ qua điều hướng\n\nSkydoor\n\nSky Tin - Tin tức địa phương toàn cầu 24h mới nhất!\n\nXem tin theo cách của bạn >>\n\n\n\n# Tuần lễ AI 2026 tại Israel tập trung vào ứng dụng trí tuệ nhn tạo và những thách thức an ninh\n\nTuần lễ Trí tuệ nhn tạo (AI Week) 2026 quy tụ các chuyên gia, nhà nghiên cứu, đại diện doanh nghiệp, cơ quan chính phủ, qun đội và giới học\n\nĐọc tin gốc tại nhandan.vn →\n\n## Tin tức Israel mới nhất hôm nay\n\n[](\n\n### Hiệp định VIFTA: Cơ hội đan xen thách thức tại thị trường Israel [...] 3 giờ trước–vneconomy.vnvneconomy.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Việt Nam-Palestine thúc đẩy hợp tác đào tạo cán bộ\n\n14 giờ trước–baoquocte.vnbaoquocte.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Máy bay của qun đội Nga đáp xuống Israel?\n\n14 giờ trước–24h.com.vn24h.com.vn\n\nXem tóm tắt nhanh\n\n[](\n\n### Tuần lễ AI 2026 tại Israel tập trung vào ứng dụng trí tuệ nhn tạo và những thách thức an ninh - Báo Nhn Dn điện tử\n\n1 ngày trước–nhandan.vnnhandan.vn\n\nXem tóm tắt nhanh",
+                "score": 0.60666215
+              },
+              {
+                "title": "XSMN 10/11/2026 - kết quả xổ số miền Nam ngày 10 tháng 11: Ai là người sở hữu tấm vé trúng giải đặc biệt hôm nay?",
+                "url": "https://baoquocte.vn/xsmn-10-11-2026-ket-qua-xo-so-mien-nam-ngay-10-thang-11-ai-la-nguoi-so-huu-tam-ve-trung-giai-dac-biet-hom-nay-431933.html",
+                "source": "baoquocte.vn",
+                "summary": "Truyền thông quốc tế dành sự quan tm lớn đến chuyến thăm cấp Nhà nước của Tổng Bí thư, Chủ tịch nước Tô Lm và Phu nhn tới Đan Mạch từ ngày 19-21/10.\n\nLàm thế nào một siêu trí tuệ AI có thể thống trị thế giới? \n\n### Làm thế nào một siêu trí tuệ AI có thể thống trị thế giới?\n\nKhi trí tuệ nhn tạo (AI) ngày càng mạnh mẽ và con người phụ thuộc nhiều hơn vào công nghệ này, nguy cơ một hệ thống siêu thông minh vượt khỏi tầm kiểm soát đang ...\n\nPhiên bản di động [...] Cuộc gặp thượng đỉnh giữa hai nhà lãnh đạo Mỹ và Trung Quốc thể hiện nhu cầu lớn của cả hai về ổn định chiến lược và thúc đẩy hợp tác.\n\nNhững vấn đề phức tạp của xung đột Trung Đông \n\n### Những vấn đề phức tạp của xung đột Trung Đông\n\nSau hơn hai tháng bom đạn bao phủ vùng Vịnh, cuộc xung đột ở Trung Đông vẫn mờ mịt, nhưng hậu họa thì đã rõ.\n\nMyanmar: Cuộc chuyển giao quyền lực \n\n### Myanmar: Cuộc chuyển giao quyền lực [...] Thủ tướng Nhật Bản Takaichi Sanae đã lên đường sang Washington trong chuyến thăm 4 ngày (từ ngày 18/3).\n\n## Đọc báo nước ngoài\n\nThỏa thuận ngừng bắn cục bộ Nga-Ukraine: ‘Nhỏ mà có võ’ \n\n### Thỏa thuận ngừng bắn cục bộ Nga-Ukraine: ‘Nhỏ mà có võ’\n\nThỏa thuận ngừng bắn tại TP. Oleshky có thể là khuôn mẫu hữu ích hơn cho tiến trình hòa bình Nga-Ukraine.\n\nBầu cử giữa kỳ Mỹ: Điểm nóng chờ 'giờ G' \n\n### Bầu cử giữa kỳ Mỹ: Điểm nóng chờ 'giờ G'",
+                "score": 0.51105833
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R04_read_url_routing",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_read_url",
+        "difficulty": "easy",
+        "what_it_tests": "Đã có link cụ thể → read_url, không phải web_search."
+      },
+      "input": "Tóm tắt bài này giúp mình: https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://openai.com/blog/gpt-5"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://openai.com/blog/gpt-5",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://openai.com/blog/gpt-5",
+                "source": "openai.com",
+                "summary": "OpenAI\n\n# 404\n\nSearch finds no result\n\nThe question still earns its keep\n\nAsk it a new way\n\nby [gpt-6-astra(opens in a new window)](https://chatgpt.com/?surface=work&model=gpt-6-astra-wm&openaicom-did=52cdc990-ae75-4748-bf07-215286d35858&openaicom_referred=true)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R05_limit_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_limit",
+        "difficulty": "easy",
+        "what_it_tests": "Trích đúng limit=10 từ '10 tweet'."
+      },
+      "input": "Lấy 10 tweet mới nhất của Elon Musk",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 10
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 10
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "elonmusk",
+            "items": [
+              {
+                "title": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any fur",
+                "summary": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any further proof that thi…",
+                "url": "https://x.com/elonmusk/status/2119996001490768028",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:30:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1165,
+                  "views": "499515"
+                }
+              },
+              {
+                "title": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 m",
+                "summary": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 million last year ma…",
+                "url": "https://x.com/elonmusk/status/2119993726898774521",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:21:06 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 356,
+                  "views": "438467"
+                }
+              },
+              {
+                "title": "RT @ricwe123: The Germans are learning what mass immigration really means.",
+                "summary": "RT @ricwe123: The Germans are learning what mass immigration really means.\n\n\"Wir schaffen das\" https://t.co/pEQc1OMbao",
+                "url": "https://x.com/elonmusk/status/2119992481156829218",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:16:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1748,
+                  "views": "419623"
+                }
+              },
+              {
+                "title": "RT @JTLonsdale: The UK “justice system” is an utter joke. Beyond parody. Total dishonor.",
+                "summary": "RT @JTLonsdale: The UK “justice system” is an utter joke. Beyond parody. Total dishonor.",
+                "url": "https://x.com/elonmusk/status/2119991850820051347",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:13:39 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 298,
+                  "views": "396629"
+                }
+              },
+              {
+                "title": "RT @TheJadeWarwick: UK judge gives Russel Brand 10 years 6 months for “rape”. ",
+                "summary": "RT @TheJadeWarwick: UK judge gives Russel Brand 10 years 6 months for “rape”. \nNo forensic evidence. No DNA. No CCTV. \n\nSame country and sy…",
+                "url": "https://x.com/elonmusk/status/2119991792842260619",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:13:25 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 624,
+                  "views": "365861"
+                }
+              },
+              {
+                "title": "RT @EvaFox: Most people assume SpaceX began because Elon Musk wanted to build rockets, but the original idea was smaller",
+                "summary": "RT @EvaFox: Most people assume SpaceX began because Elon Musk wanted to build rockets, but the original idea was smaller. \n\nAround 2001 he…",
+                "url": "https://x.com/elonmusk/status/2119991750769197295",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:13:15 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 228,
+                  "views": "377272"
+                }
+              },
+              {
+                "title": "Grok",
+                "summary": "Grok",
+                "url": "https://x.com/elonmusk/status/2119989523748905221",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:04:24 +0000 2026",
+                "metrics": {
+                  "favorites": 4068,
+                  "retweets": 432,
+                  "views": "926427"
+                }
+              },
+              {
+                "title": "The most entertaining outcome is the most likely, especially if ironic",
+                "summary": "The most entertaining outcome is the most likely, especially if ironic",
+                "url": "https://x.com/elonmusk/status/2119989362725396589",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:03:46 +0000 2026",
+                "metrics": {
+                  "favorites": 8796,
+                  "retweets": 750,
+                  "views": "1347563"
+                }
+              },
+              {
+                "title": "RT @SawyerMerritt: Jay Leno just tried @Tesla's FSD (Supervised) for the first time. The Model Y L pulled over by itself",
+                "summary": "RT @SawyerMerritt: Jay Leno just tried @Tesla's FSD (Supervised) for the first time. The Model Y L pulled over by itself when an ambulance…",
+                "url": "https://x.com/elonmusk/status/2119989055392002456",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:02:32 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 570,
+                  "views": "383790"
+                }
+              },
+              {
+                "title": "RT @bot: We've reset weekly limits for all Grok Bot users.",
+                "summary": "RT @bot: We've reset weekly limits for all Grok Bot users.\n\nEnjoy!",
+                "url": "https://x.com/elonmusk/status/2119989015957078096",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:02:23 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1882,
+                  "views": "379718"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R06_timeframe_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_timeframe",
+        "difficulty": "medium",
+        "what_it_tests": "'tuần này' → timeframe=week."
+      },
+      "input": "Tin công nghệ trong tuần này",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "Tin công nghệ",
+              "timeframe": "week",
+              "topic": "general",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "topic: expected 'news', got 'general'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "Tin công nghệ",
+            "timeframe": "week",
+            "topic": "general",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "Tin công nghệ",
+            "topic": "general",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "Diễn đàn Công nghệ & Cuộc sống - Congnghe.vn",
+                "url": "https://congnghe.vn",
+                "source": "congnghe.vn",
+                "summary": "TIN HOT TRONG NGÀY\n\n Toyota Hilux 2023 tăng giá bán tới 180 triệu đồng tại Việt Nam\n scroll content\n Phát triển và ứng dụng công nghệ thông tin lượng tử (phần 1)\")\n Quy trình quản lý vật chứa bí mật nhà nước\n Năng lực sản xuất vũ khí của Serbia đến đu?\n\n Twitter\n Facebook\n Google+\n YouTube\n RSS\n\nDiễn đàn Công nghệ & Đời sống\n\n Tăng tốc độ truy cập internet bằng cách đổi DNS Google, OpenDNS hoặc Norton   Thủ thuật [...] An toàn thông tin cho điện toán đám my - Mục tiêu cao nhất trong phát triển quốc gia số\n Ứng dụng mật mã trực quan phòng chống phishing trong đảm bảo an toàn giao dịch trực tuyến \n\n  Ứng dụng mật mã trực quan phòng chống phishing trong đảm bảo an toàn giao dịch trực tuyến\n\nCNTT - Viễn thông\n\n Tiêu điểm\n Internet\n Viễn thông\n Kinh doanh\n Thủ thuật\n Fintech\n\nChính phủ ban hành 34 nghị quyết công bố diện tích 3.321 đơn vị hành chính cấp xã [...] ## Đức đẩy mạnh xy dựng lực lượng tác chiến không người lái\n\n Thủy qun lục chiến Mỹ tái kích hoạt phi đội F-35C tại bờ Đông\n Mỹ phát triển phương tiện không người lái dưới nước đa nhiệm, có thể mang ngư lôi\n Tình báo Ukraine tiết lộ loạt nng cấp đáng gờm của tên lửa và UAV Nga\n Mỹ chi 16,9 triệu USD duy trì phi đội máy bay cảnh báo sớm E-767\n\nCông nghệ môi trường\n\nPVCFC dồn lực cho 3 mũi nhọn \n\n## PVCFC dồn lực cho 3 mũi nhọn",
+                "score": 0.51544976
+              },
+              {
+                "title": "Ngành Công nghệ thông tin có những đặc điểm nào?",
+                "url": "https://daihoccongnghedonga.edu.vn/nganh-cong-nghe-thong-tin-co-nhung-dac-diem-nao",
+                "source": "daihoccongnghedonga.edu.vn",
+                "summary": "Sửa trang\n\nQuản lý tài khoản\n\nQuản lý tài khoản\n\nQuản lý ví   Lịch sử giao dịch   Lịch sử đăng bài   Đăng tin   Đăng xuất\n\nThời gian render trang: 27/09/2026 04:26:02.880\n\nGIỚI THIỆU\n\n Trang chủ\n VỀ CHÚNG TÔI\n Tin tuyển sinh\n\n  + Tin ngành công nghệ thông tin\n THÔNG TIN\n TUYỂN SINH\n liên hệ\n\nTrang chủ / Tin tuyển sinh / Ngành Công nghệ thông tin là gì? Học gì và ra trường làm gì?\n\n# Ngành Công nghệ thông tin có những đặc điểm nào? [...] Tìm hiểu ngành công nghệ thông tin học những môn gì: lập trình, mạng máy tính, cơ sở dữ liệu, bảo mật, trí tuệ nhn tạo, kỹ năng thực hành, cơ hội nghề nghiệp và lộ trình học hiệu quả dành cho người mới bắt đầu\n\n Xem chi tiết\n\nCông nghệ thông tin gồm những ngành nào? \n\n### Công nghệ thông tin gồm những ngành nào?\n\nTìm hiểu công nghệ thông tin gồm những ngành nào, đặc điểm từng ngành, cơ hội việc làm, mức lương, kỹ năng cần có và gợi ý chọn ngành phù hợp với năng lực, sở thích của bạn. [...] Tìm hiểu các kỹ năng cần có khi ứng tuyển ngành Công nghệ thông tin: kỹ thuật, ngoại ngữ, tư duy logic, kỹ năng mềm, làm việc nhóm, giải quyết vấn đề và cách chuẩn bị hồ sơ, phỏng vấn để tăng cơ hội trúng tuyển.\n\n Xem chi tiết\n\nNgành Công nghệ thông tin yêu cầu những gì? \n\n### Ngành Công nghệ thông tin yêu cầu những gì?",
+                "score": 0.48674685
+              },
+              {
+                "title": "Có Nên Học Công Nghệ Thông Tin? Học CNTT Có Khó Không?",
+                "url": "https://intracomuni.edu.vn/co-nen-hoc-cong-nghe-thong-tin",
+                "source": "intracomuni.edu.vn",
+                "summary": "## Ai Phù Hợp Với Ngành Công Nghệ Thông Tin?\n\nNgành Công nghệ thông tin phù hợp với người yêu thích công nghệ, có tư duy logic, kiên trì giải quyết vấn đề và sẵn sàng tự học. Không nhất thiết phải biết lập trình trước khi vào đại học, nhưng học sinh nên có hứng thú tìm hiểu cách các hệ thống máy tính và ứng dụng hoạt động.\n\n### Những Tố Chất Phù Hợp Với Ngành CNTT\n\nDưới đy là một số đặc điểm có thể giúp học sinh học tập và phát triển trong ngành. [...] Có nên học Công nghệ thông tin? Học CNTT có khó không? Đy là những băn khoăn phổ biến của học sinh THPT khi đứng trước lựa chọn ngành học. Công nghệ thông tin (CNTT) vẫn có nhiều hướng nghề nghiệp trong lĩnh vực phần mềm, dữ liệu, bảo mật và hệ thống máy tính. Tuy nhiên, ngành học này đòi hỏi khả năng tư duy logic, kiên trì thực hành và chủ động cập nhật kiến thức. Để quyết định có nên học CNTT, học sinh cần nhìn nhận thực tế thị trường việc làm, độ khó của chương trình và mức độ phù hợp với [...] Nên học Công nghệ thông tin nếu bạn yêu thích công nghệ, có khả năng tư duy logic và sẵn sàng dành thời gian học tập, thực hành lu dài. Ngành CNTT phù hợp với người muốn sử dụng máy tính và phần mềm để giải quyết vấn đề thực tế, không chỉ với những học sinh đã biết lập trình từ THPT.\n\nTuy nhiên, quyết định chọn ngành cần dựa trên sở thích, năng lực và mục tiêu nghề nghiệp thay vì kỳ vọng rằng học CNTT chắc chắn có thu nhập cao.\n\n### Những Lý Do Nên Cn Nhắc Ngành Công Nghệ Thông Tin",
+                "score": 0.47826138
+              },
+              {
+                "title": "Tin tức Sự kiện | Cổng Thông tin điện tử Bộ Khoa học và Công nghệ",
+                "url": "https://mst.gov.vn/tin-tuc-su-kien.htm",
+                "source": "mst.gov.vn",
+                "summary": "Nghiên cứu cơ bản và ứng dụng công nghệ cao.\n\n Xem thêm\n\n\n\nDịch vụ hành chính công\n\nThông tin về Dịch vụ hành chính công Bộ Khoa học và Công nghệ; Hệ thống thông tin giải quyết TTHC\n\n Xem thêm\n\n\n\nSản phẩm dịch vụ,   \nKHCN, ĐMST\n\nThông tin giới thiệu về các sản phẩm, dịch vụ ngành Khoa học và Công nghệ\n\n Xem thêm\n\n\n\nMake in VietNam\n\nThông tin về Công nghiệp công nghệ số\n\n Xem thêm [...] Sau ba ngày học tập, trao đổi và chia sẻ kinh nghiệm quản trị của Singapore, Khóa bồi dưỡng \"Lãnh đạo số, quản trị và chuyển đổi số\" dành cho lãnh đạo Sở Khoa học và Công nghệ (KH&CN) của 34 tỉnh, thành phố đã hoàn thành chương trình đề ra. Khóa học không chỉ trang bị kiến thức, kỹ năng quản trị mà còn tăng cường kết nối, hợp tác và mở ra cơ hội tiếp tục học tập, trao đổi kinh nghiệm quốc tế.\n\nPhát triển AI lấy con người làm trung tm, thúc đẩy hợp tác quốc tế [...] Khoa học và Công nghệ Đổi mới sáng tạo Chuyển đổi số Bưu chính, Viễn thông Sở hữu trí tuệ Tiêu chuẩn, đo lường, chất lượng Năng lượng nguyên tử\n Multimedia\n THƯ ĐIỆN TỬ\n\nKhác\n\n Videos\n Infographic\n Ảnh\n Voice\n Nhiệm vụ trọng tm\n\nChọn ngôn ngữ\n\nVN  Vietnamese   GB  English\n\n# Tin tức Sự kiện\n\nTăng cường hợp tác đa bên, thúc đẩy phát triển hệ sinh thái AI \n\n## Tăng cường hợp tác đa bên, thúc đẩy phát triển hệ sinh thái AI",
+                "score": 0.45754927
+              },
+              {
+                "title": "Phát minh của Trung Quốc làm rung chuyển ngành công nghệ: Thiết bị \"đọc não\" chính xác đến 94%, gõ chữ bằng suy nghĩ trong nhiều giờ",
+                "url": "https://genk.vn/phat-minh-cua-trung-quoc-lam-rung-chuyen-nganh-cong-nghe-thiet-bi-doc-nao-chinh-xac-den-94-go-chu-bang-suy-nghi-trong-nhieu-gio-165261109142907999.chn",
+                "source": "genk.vn",
+                "summary": "Chuyển đến nội dung chính\n\n Gamek\n Kenh14\n Cafebiz\n\nGenK - Trang thông tin công nghệ\n\n# Phát minh của Trung Quốc làm rung chuyển ngành công nghệ: Thiết bị \"đọc não\" chính xác đến 94%, gõ chữ bằng suy nghĩ trong nhiều giờ\n\nThiên Di, vietnamdaily\n\n Theo dõi Genk.vn trên google news\n\nCác nhà khoa học Trung Quốc vừa phát triển một loại điện cực mới dành cho công nghệ giao diện não – máy tính (BCI) không xm lấn, cho phép người dùng nhập ký tự bằng tín hiệu não với độ chính xác hơn 94%. [...] Các nhà khoa học nhận định kết quả nghiên cứu đã xác lập một hướng thiết kế điện cực mô phỏng đặc tính của da, có khả năng duy trì hoạt động ổn định trong thời gian dài. Đy là bước tiến hướng tới ứng dụng BCI không xm lấn trong nghiên cứu thần kinh khi người dùng di chuyển và theo dõi lm sàng.\n\nTheo SCMP\n\nTheo vietnamdaily  Copy link \n\nLink bài gốc  Lấy link\n\nTags:\n\n trung quốc\n điện cực\n quảng ty\n BCI\n\nTin cùng chuyên mục\n\nXem theo ngày\n\nNỔI BẬT TRANG CHỦ",
+                "score": 0.38221118
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R07_search_type_arg",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type",
+        "difficulty": "medium",
+        "what_it_tests": "'phổ biến/top' → search_type=Top (không phải Latest)."
+      },
+      "input": "Cho mình các tweet phổ biến (top) nhất về OpenAI",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "OpenAI",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "OpenAI",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "OpenAI",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "I still don't understand why everyone is not using this yet. Thanks to it, a year ago I increased my income to 15,000 do",
+                "summary": "I still don't understand why everyone is not using this yet. Thanks to it, a year ago I increased my income to 15,000 dollars a month\n\nAndrey Karpathy, co-founder of OpenAI, published a simple idea that got 25 million views: stop using AI to write code, use it to build a second brain\n\nYou point Claude Code to a folder, drop any source in there (an article, transcript, PDF) and Claude reads it, links it, and saves it into a living wiki of everything you know. It compounds like interest: the more you feed it, the smarter it gets\n\nHere is the gist:\n\nInstall Obsidian, create a vault, open it in Claude Code\n\nPaste the file with Karpathy's wiki idea and tell Claude to build it\n\nClaude creates three folders: raw for sources, wiki for its pages, CLAUDE\nwhich runs everything\n\nDrop any source into raw and say ingest this\n\nAsk questions across everything, forever\n\n5 minutes to set up, and you never start with an empty chat again\n\nThe full instructions can be found in the article below",
+                "url": "https://x.com/Bober_smart/status/2119070145284841481",
+                "source": "@Bober_smart",
+                "date": "Sat Nov 07 14:11:07 +0000 2026",
+                "metrics": {
+                  "favorites": 1181,
+                  "retweets": 127,
+                  "views": "95255"
+                }
+              },
+              {
+                "title": "I still don't understand why everyone is not using this yet. Thanks to it, a year ago I increased my income to 17,000 do",
+                "summary": "I still don't understand why everyone is not using this yet. Thanks to it, a year ago I increased my income to 17,000 dollars a month\n\nAndrey Karpathy, co-founder of OpenAI, published a simple idea that got 16 million views: stop using AI to write code, use it to build a second brain\n\nYou point Claude Code to a folder, drop any source in there (an article, transcript, PDF) and Claude reads it, links it, and saves it into a living wiki of everything you know. It compounds like interest: the more you feed it, the smarter it gets\n\nHere is the gist:\n\nInstall Obsidian, create a vault, open it in Claude Code\n\nPaste the file with Karpathy's wiki idea and tell Claude to build it\n\nClaude creates three folders: raw for sources, wiki for its pages, CLAUDE\nwhich runs everything\n\nDrop any source into raw and say \"ingest this\"\n\nAsk questions across everything, forever\n\nFive minutes to set up, and you never start with an empty chat again\n\nThe full step-by-step guide is in the article. Save to bookmarks",
+                "url": "https://x.com/Bober_smart/status/2090859011365056720",
+                "source": "@Bober_smart",
+                "date": "Fri Aug 21 17:50:09 +0000 2026",
+                "metrics": {
+                  "favorites": 11360,
+                  "retweets": 1466,
+                  "views": "2888559"
+                }
+              },
+              {
+                "title": "This is f*cking insane. OpenAI CEO Sam Altman:",
+                "summary": "This is f*cking insane. OpenAI CEO Sam Altman:\n\n\"We are going to see 10-person billion-dollar companies pretty soon\n\nIf I were 22 right now, I would feel like the luckiest kid in history\"\n\nIn 22 seconds, he explains why the next billion-dollar company won't need a building full of people, just a few founders and their agents\n\nChatGPT → Codex → Agent Builder → Agents SDK → Evals → A 10-Person Company Run By Agents\n\nMost people will feel motivated for 3 minutes, then go back to scrolling\n\nThe few who act will start building their company this weekend\n\nSave this before it disappears from your feed\n\nEverything below is free:\n\nFind what to automate first\nhttps://t.co/CVaTL5jXHB\n\nHow companies put AI to work\nhttps://t.co/EfPautasVX\n\nCodex in the cloud\nhttps://t.co/wYBuugoGzU\n\nCodex skills\nhttps://t.co/KIwM8reiAt\n\nAgent Builder (agents without code)\nhttps://t.co/y5lVjIVWNE\n\nFunction calling (give your agents tools)\nhttps://t.co/hlQ0OrhsDr\n\nAgents SDK for JavaScript\nhttps://t.co/wNfa3neVSQ\n\nAgents SDK examples\nhttps://t.co/TnPiIML4if\n\nA customer service agent team you can copy\nhttps://t.co/9TYXiRzBm7\n\nVoice agents\nhttps://t.co/wBnMrKEKMd\n\nEvals (check your agents' work)\nhttps://t.co/tUueczMWZP\n\nAll of this costs $0\n\nThe 10-person billion-dollar company will be built by someone who opened these links, not someone who scrolled past them\n\nBookmark it and start with the first link tonight\n\nThen read how to set up the agent team behind a tiny company in the harness engineering guide below ↓",
+                "url": "https://x.com/godsystemsmd/status/2118707511813447984",
+                "source": "@godsystemsmd",
+                "date": "Fri Nov 06 14:10:09 +0000 2026",
+                "metrics": {
+                  "favorites": 488,
+                  "retweets": 93,
+                  "views": "80964"
+                }
+              },
+              {
+                "title": "This is f*cking insane. OpenAI CEO Sam Altman:",
+                "summary": "This is f*cking insane. OpenAI CEO Sam Altman:\n\n\"We are going to see 10-person billion-dollar companies pretty soon\n\nIf I were 22 right now, I would feel like the luckiest kid in history\"\n\nIn 22 seconds, he explains why the next billion-dollar company won’t need an office full of people, just a few founders and a team of agents\n\nChatGPT → Codex → Agent Builder → Agents SDK → Evals → A 10-Person Company Run By Agents\n\n99% people will feel motivated for 3 minutes, then keep scrolling...\n\nThe few who actually open the links will start building their company this weekend\n\nSave this before it vanishes from your feed\n\nEverything below is FREE:\n\nFind what to automate first\nhttps://t.co/YWHdgRnuzP\n\nHow companies put AI to work\nhttps://t.co/pvlQEhqgEz\n\nCodex in the cloud\nhttps://t.co/zZWUdokyny\n\nCodex skills\nhttps://t.co/2hdcb5KdBy\n\nAgent Builder (agents without code)\nhttps://t.co/4vG52j4T8i\n\nFunction calling (give your agents tools)\nhttps://t.co/UtjC1UOx2c\n\nAgents SDK for JavaScript\nhttps://t.co/uawnMmnI9p\n\nAgents SDK examples\nhttps://t.co/OWi0bWpApP\n\nA customer service agent team you can copy\nhttps://t.co/GRVZLYi4Pf\n\nVoice agents\nhttps://t.co/1SUmRzYIvA\n\nEvals (check your agents' work)\nhttps://t.co/sH92SCsLJF\n\nAll of this costs $0\n\nThe next 10-person billion-dollar company will be built by someone who opens these links tonight, not someone who scrolls past them\n\nBookmark it and start with the first link right now\n\nThen read how to set up the agent team behind a tiny company in the harness engineering guide below ↓",
+                "url": "https://x.com/shikamarutsai/status/2119542201944518994",
+                "source": "@shikamarutsai",
+                "date": "Sun Nov 08 21:26:54 +0000 2026",
+                "metrics": {
+                  "favorites": 1367,
+                  "retweets": 204,
+                  "views": "272504"
+                }
+              },
+              {
+                "title": "This is f*cking insane. Geoffrey Hinton, the Nobel Prize winner they call the Godfather of AI, was asked what AI will do",
+                "summary": "This is f*cking insane. Geoffrey Hinton, the Nobel Prize winner they call the Godfather of AI, was asked what AI will do to jobs. His answer:\n\n\"For mundane intellectual labor, AI is just going to replace everybody\"\n\nIn 93 seconds, he explains why this time is different: one person with an AI assistant will do the work of 10\n\nThe new jobs everyone promises? If AI can do all routine thinking work, he asks what jobs are left to create\n\nThen the part that hits hardest. His niece answers complaint letters for a health service. Each one took her 25 minutes. Now AI writes it, she checks it, and it takes 5. So they need five times fewer of her\n\nHe agrees it won't be AI that takes your job, it'll be a person using AI. That just means far fewer people\n\n10 People → 1 Person + AI → Agents → Harness → Loops → The One Who Stays\n\nSave this before it disappears from your feed\n\nEverything below is free:\n\nA free AI course for non-programmers\nhttps://t.co/kJ0gTh3Izv\n\nAI Python for beginners, taught by Andrew Ng\nhttps://t.co/gMr707yc2w\n\nInteractive prompt engineering tutorial\nhttps://t.co/Oi636ZBdm7\n\nStarter projects you can deploy with Claude\nhttps://t.co/H2u5cLynrO\n\nThe OpenAI cookbook\nhttps://t.co/qTRsXLkwDf\n\nAn open-source agent that runs on your machine\nhttps://t.co/uzuyzkkmv7\n\nThe open-source coding agent\nhttps://t.co/MnI3JmABo6\n\nGemini in your terminal\nhttps://t.co/qwtWy9KPqY\n\nOpen-source AI developers\nhttps://t.co/3tqiSKlOtJ\n\nBuild resilient agents as graphs\nhttps://t.co/JaUpcX4a4M\n\nMicrosoft's agent framework\nhttps://t.co/19tcxjdDxu\n\nSecure sandboxes for your agents\nhttps://t.co/MMiAZxglJh\n\nLet your agents use any website\nhttps://t.co/93ea2svpPH\n\nBe the one person who runs the AI, not one of the nine it replaces\n\n95% will wait to find out if their job is next, the 5% who build a harness will be the one doing the work of ten\n\nBookmark it and start with the first link tonight\n\nThen use the guide below to build your harness before your job gets automated ↓",
+                "url": "https://x.com/0xSanabi/status/2119839282231722153",
+                "source": "@0xSanabi",
+                "date": "Mon Nov 09 17:07:24 +0000 2026",
+                "metrics": {
+                  "favorites": 439,
+                  "retweets": 74,
+                  "views": "170367"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R08_out_of_scope",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy",
+        "what_it_tests": "Câu ngoài phạm vi research → KHÔNG gọi tool, từ chối/định hướng."
+      },
+      "input": "Giải giúp mình bài toán tích phân: nguyên hàm của x^2 là gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Trong ngữ cảnh này, bạn đang hỏi về toán học thay vì tìm thông tin trên mạng hoặc phân tích nội bộ chính sách. Tôi có thể giúp giải thích về nguyên hàm của x^2.\n\nNguyên hàm của x^2 là (1/3)x^3 + C, trong đó C là hằng số tích phân. Đây là kết quả của quy tắc tích phân nguyên đối với hàm x^n, trong đó n = 2 trong trường hợp này.\n\nNếu bạn muốn kiểm tra kết quả này, bạn có thể tính đạo hàm của (1/3)x^3 + C và bạn sẽ nhận được x^2.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R09_no_tool_capability",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "no_tool_meta",
+        "difficulty": "easy",
+        "what_it_tests": "Câu hỏi meta → trả lời thẳng, KHÔNG gọi tool."
+      },
+      "input": "Bạn là gì và làm được những gì?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi là một trợ lý nghiên cứu có thể thực hiện nhiều tác vụ dựa trên yêu cầu của bạn. Tôi có thể:\n\n- Tìm kiếm và tổng hợp thông tin từ web, tin tức và mạng xã hội.\n- Xem xét và định dạng kết quả nghiên cứu.\n- Xác minh chính sách nội bộ.\n- Tìm kiếm và trích xuất nội dung từ bài báo khoa học.\n- Trợ giúp trong việc chuẩn bị và gửi thông tin đếnTelegram.\n\nTôi sẽ thực hiện các tác vụ này dựa trên hướng dẫn của bạn và sử dụng các công cụ được cung cấp. Tôi không thể tạo ra thông tin mới hoặc thực hiện các tác vụ không liên quan đến nghiên cứu và thông tin.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R10_missing_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_handle",
+        "difficulty": "medium",
+        "what_it_tests": "Thiếu handle → ask_user, KHÔNG đoán bừa người nào."
+      },
+      "input": "Tóm tắt 5 tweet mới nhất giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "example_user",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call timeline"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "example_user",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "example_user",
+            "items": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "R11_missing_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "clarify_missing_url",
+        "difficulty": "medium",
+        "what_it_tests": "Nói 'bài này' nhưng không có link → ask_user xin URL."
+      },
+      "input": "Tóm tắt bài viết này hộ mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi cần bạn cung cấp URL của bài viết để tôi có thể tóm tắt cho bạn.",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R12_confirm_before_send",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "confirm_before_write",
+        "difficulty": "medium",
+        "what_it_tests": "Hành động ghi (gửi) → xác nhận trước (ask_user yes_no), không tự gửi."
+      },
+      "input": "Đăng bản tin này lên Telegram giúp mình",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [],
+        "actual_text": "Clarify: Bạn muốn đăng bản tin nào lên Telegram? Vui lòng cung cấp nội dung bạn muốn chia sẻ.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify"
+        ]
+      },
+      "tool_results": []
+    },
+    {
+      "id": "R13_parallel_web_and_tweets",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "parallel_tool_calls",
+        "difficulty": "hard",
+        "what_it_tests": "Một request cần hai nguồn → gọi cả web_search và search_tweets; eval không phụ thuộc thứ tự tool call."
+      },
+      "input": "Tìm trên web tin AI hôm nay và tìm thêm tweet về AI.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "timeframe": "day",
+              "topic": "general",
+              "max_results": 5
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "limit": 5,
+              "query": "AI",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "topic: expected 'news', got 'general'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "timeframe": "day",
+            "topic": "general",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "general",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Artificial intelligence",
+                "url": "https://www.dw.com/en/artificial-intelligence/t-42133476",
+                "source": "dw.com",
+                "summary": "1. Skip to content\n2. Skip to main menu\n3. Skip to more DW sites\n\nIn focus\n\nCOP31Ukraine warAI\n\nLatest audioLatest videos\n\nLive TV\n\nImage: AA/picture alliance\n\n# Artificial intelligence\n\nArtificial intelligence (AI) is technology to make computers and machines simulate human learning, comprehension, decision-making and even creativity.\n\nSkip next section News\n\n## News\n\nNovember 6, 2026\n\n### Data center protesters break into Microsoft site in Amsterdam\n\nNovember 6, 2026 [...] With the rapid advances in AI translation technology, some linguists think human interpreters may soon be obsolete.\n\nSocietyNovember 1, 202609:50 min\n\n### America's AI race: Are the risks being ignored?\n\nUS President Donald Trump says AI is the future. But a growing number of voters are worried about the risks.\n\nPoliticsOctober 24, 202605:15 min\n\n### Deepfakes, bots and distrust: How AI is shaping Israel's election [...] Israel's political parties are using AI for deepfakes, robocalls and bots. Experts warn that it could tilt the election.\n\nPoliticsOctober 19, 2026\n\n### You can get AI answers for free. Who really pays?\n\nEvery AI answer feels free, but there are energy and data center costs.\n\nBusinessOctober 19, 202603:21 min\n\n### The EU wants an AI revolution. But on whose terms?\n\nThe European Union wants to catch up on AI. Can it compete with the US while protecting workers, safety and the climate?",
+                "score": 0.65173227
+              },
+              {
+                "title": "Super Intelligence",
+                "url": "https://www.anl.gov/si",
+                "source": "anl.gov",
+                "summary": "Super Intelligence (SI), also known as Artificial Intelligence (AI), is transforming how we advance science, strengthen national security, and drive U.S. innovation leadership. Argonne is leveraging world-class expertise and computing power to lead in the responsible development and deployment of SI. Our researchers are applying cutting-edge SI to engineer next-generation materials, fortify the nation’s energy infrastructure, speed breakthroughs in medical treatments, and automate scientific [...] automate scientific experiments. These efforts are unlocking new frontiers of discovery while enhancing resilience and competitiveness across critical sectors.",
+                "score": 0.49318945
+              },
+              {
+                "title": "C3.ai, Inc. (AI) Stock Price, News, Quote & History - Yahoo Finance",
+                "url": "https://finance.yahoo.com/quote/AI",
+                "source": "finance.yahoo.com",
+                "summary": "| AI Q2 FY2025 earnings call transcript | 2025 | Q2 | 2024-12-09 | 2026-07-08 | 3740916 | IN_HOUSE | 228044 | Earnings call | s3://890742573995-market-data-service-prod-us-east-1/shared/transcripts/2024/12/9/3740916.json |\n| AI Q1 FY2025 earnings call transcript | 2025 | Q1 | 2024-09-04 | 2026-06-27 | 2641096 | IN_HOUSE | 198847 | Earnings call | s3://890742573995-market-data-service-prod-us-east-1/shared/transcripts/2024/9/4/2641096.json | [...] | AI Q4 FY2026 earnings call transcript | 2026 | Q4 | 2026-06-03 | 2026-06-27 | 3471122 | IN_HOUSE | 557460 | Earnings call | s3://890742573995-market-data-service-prod-us-east-1/shared/transcripts/2026/6/3/3471122.json |\n| AI Q3 FY2026 earnings call transcript | 2026 | Q3 | 2026-02-25 | 2026-06-27 | 3232845 | IN_HOUSE | 483789 | Earnings call | s3://890742573995-market-data-service-prod-us-east-1/shared/transcripts/2026/2/25/3232845.json | [...] | Field | Value |\n --- |\n| Previous close | 11.69 |\n| Open | 11.70 |\n| Day low | 11.66 |\n| Day high | 12.10 |\n| Dividend yield | 0.00% |\n| Beta | 2.13 |\n| Forward pe | -25.52 |\n| Volume | 3,171,180 |\n| Average volume | 4,939,442 |\n| Average volume10days | 4,221,240 |\n| Average daily volume10 day | 4,221,240 |\n| Bid | 0.00 |\n| Ask | 0.00 |\n| Bid size | 70,000 |\n| Ask size | 100,000 |\n| Market cap | 1,929,358,336 |\n| Non diluted market cap | 1,879,516,516 |\n| Fifty two week low | 7.68 |",
+                "score": 0.3667717
+              },
+              {
+                "title": "Artificial Intelligence - IBM Research",
+                "url": "https://research.ibm.com/artificial-intelligence",
+                "source": "research.ibm.com",
+                "summary": "## Topics\n\n Adversarial Robustness and Privacy\n AI for Asset Management\n AI for Business Automation\n AI for Code\n AI for Supply Chain\n AI Testing\n Automated AI\n Causality\n Computer Vision\n Conversational AI\n Explainable AI\n Fairness, Accountability, Transparency\n Foundation Models\n Generative AI\n Granite\n Human-Centered AI\n Knowledge and Reasoning\n Machine Learning\n Natural Language Processing\n Neuro-symbolic AI\n Speech\n Trustworthy AI\n Trustworthy Generation\n Uncertainty Quantification [...] Large language models are revolutionizing the world, but today, delivering them safely and efficiently at the scale enterprise needs is difficult. IBM Research is designing powerful new ways to support the future of business, with open-source tools to prepare, secure, and use data, along with best-in-class multimodal models, and technology that redefines how we interact with AI systems. Generative computing is how we move beyond AI prompting to AI programming.\n\nFeatured topics: [...] With over 3,000 researchers across the globe, IBM Research has a long pedigree of turning fundamental research into world-altering technology. Learn more about the ways that we collaborate with businesses and organizations across the globe to help solve their most pressing needs faster.\n\n MIT-IBM Watson AI Lab\n AI Hardware Center",
+                "score": 0.33528608
+              },
+              {
+                "title": "13 Mind-Blowing AI Hacks That Can Actually Change Your Life",
+                "url": "https://www.youtube.com/watch?v=yMKHtJpgZzc",
+                "source": "youtube.com",
+                "summary": "Here are 13 AI hacks you can use today. An AI agent calls your internet company and cuts your bill. Claude Code finds why your PC is slow. An agent removes your data from data brokers. Then: an offline AI for emergencies, a giant arrow that shows you where to click, plain AI writing with ASD-STE100, Claude in your car, flight price alerts and interactive lessons in Google AI Mode, Claude Code from your phone, AI sports coaching, smart glasses that spot what to pick, and Claude in Chrome that [...] Get the prompts for every hack free in Maker Zero (the second link above).\n\nChapters\n0:00 13 AI hacks\n0:11 Let AI call your internet company\n0:51 Speed up your PC with Claude Code\n1:45 Remove your data from data brokers\n2:48 4th\n3:40 5th\n4:22 6th\n5:08 7th\n5:48 8th\n6:21 9th\n7:01 10th\n7:49 11th\n8:51 12th\n9:54 13th\n10:27 What else AI can do [...] ### Chapters\n[0:00] 13 AI hacks\n[0:11] Let AI call your internet company\n[0:51] Speed up your PC with Claude Code\n[1:45] Remove your data from data brokers\n[2:48] 4th\n[3:40] 5th\n[4:22] 6th\n[5:08] 7th\n[5:48] 8th\n[6:21] 9th\n[7:01] 10th\n[7:49] 11th\n[8:51] 12th\n[9:54] 13th\n[10:27] What else AI can do",
+                "score": 0.2854521
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "limit": 5,
+            "query": "AI",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@Berlinboy07 CGI ❌ AI varanasi shots 💦💦💦💦",
+                "summary": "@Berlinboy07 CGI ❌ AI varanasi shots 💦💦💦💦",
+                "url": "https://x.com/ShivaChary1824/status/2120053823242895438",
+                "source": "@ShivaChary1824",
+                "date": "Tue Nov 10 07:19:54 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@badgallmr KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK ai tadinha",
+                "summary": "@badgallmr KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK ai tadinha",
+                "url": "https://x.com/brisavam/status/2120053822261272646",
+                "source": "@brisavam",
+                "date": "Tue Nov 10 07:19:54 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@Ho_Neyy_ AI boosts efficiency, but human judgment is what truly creates value.",
+                "summary": "@Ho_Neyy_ AI boosts efficiency, but human judgment is what truly creates value.",
+                "url": "https://x.com/iam_mian7/status/2120053821779169643",
+                "source": "@iam_mian7",
+                "date": "Tue Nov 10 07:19:54 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@oftenhallett @Kupilainen @NotFifthGear It’s straight up Gen AI.",
+                "summary": "@oftenhallett @Kupilainen @NotFifthGear It’s straight up Gen AI.",
+                "url": "https://x.com/WatLightyear/status/2120053819153551587",
+                "source": "@WatLightyear",
+                "date": "Tue Nov 10 07:19:53 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "Asians use ai so damn much..I get on zepeto...ai ai ai GAAHHH THEY HAVE A CHARACTER AI BUILT IN NOW. THIS IS A IMVU TYPE",
+                "summary": "Asians use ai so damn much..I get on zepeto...ai ai ai GAAHHH THEY HAVE A CHARACTER AI BUILT IN NOW. THIS IS A IMVU TYPE OF GAME",
+                "url": "https://x.com/velfarre2006/status/2120053817769185513",
+                "source": "@velfarre2006",
+                "date": "Tue Nov 10 07:19:53 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "R14_out_of_scope_coding",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_coding",
+        "difficulty": "easy",
+        "what_it_tests": "Câu coding ngoài phạm vi research/news → KHÔNG gọi tool."
+      },
+      "input": "Viết giúp mình một hàm Python tính Fibonacci bằng recursion.",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Dưới đây là một hàm Python tính dãy Fibonacci sử dụng recursion:\n\n```python\ndef fibonacci(n):\n    if n <= 1:\n        return n\n    else:\n        return fibonacci(n-1) + fibonacci(n-2)\n```\n\nBạn có thể sử dụng hàm này để tính số Fibonacci tại vị trí n bằng cách gọi `fibonacci(n)`. Ví dụ: `fibonacci(10)` sẽ trả về số Fibonacci tại vị trí thứ 10.\n\nNếu bạn muốn sử dụng recursion nhưng muốn tối ưu hóa để tránh tính lại các số Fibonacci đã biết, bạn có thể sử dụng memoization như sau:\n\n```python\ndef fibonacci(n, memo={}):\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    else:\n        memo[n] = fibonacci(n-1, memo) + fibonacci(n-2, memo)\n        return memo[n]\n```\n\nHàm này sẽ lưu trữ kết quả của các số Fibonacci đã tính để không cần tính lại.",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "M01_clarify_then_fill",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_fill",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: carry limit=5 từ lượt 1 + map tên Elon Musk thành handle elonmusk từ lượt 2."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt 5 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Elon Musk nhé"
+        },
+        {
+          "role": "user",
+          "content": "Giữ đúng 5 tweet, đừng đổi số lượng"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "elonmusk",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "elonmusk",
+            "items": [
+              {
+                "title": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any fur",
+                "summary": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any further proof that thi…",
+                "url": "https://x.com/elonmusk/status/2119996001490768028",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:30:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1170,
+                  "views": "500774"
+                }
+              },
+              {
+                "title": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 m",
+                "summary": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 million last year ma…",
+                "url": "https://x.com/elonmusk/status/2119993726898774521",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:21:06 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 356,
+                  "views": "439453"
+                }
+              },
+              {
+                "title": "RT @ricwe123: The Germans are learning what mass immigration really means.",
+                "summary": "RT @ricwe123: The Germans are learning what mass immigration really means.\n\n\"Wir schaffen das\" https://t.co/pEQc1OMbao",
+                "url": "https://x.com/elonmusk/status/2119992481156829218",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:16:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1756,
+                  "views": "420689"
+                }
+              },
+              {
+                "title": "RT @JTLonsdale: The UK “justice system” is an utter joke. Beyond parody. Total dishonor.",
+                "summary": "RT @JTLonsdale: The UK “justice system” is an utter joke. Beyond parody. Total dishonor.",
+                "url": "https://x.com/elonmusk/status/2119991850820051347",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:13:39 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 299,
+                  "views": "397506"
+                }
+              },
+              {
+                "title": "RT @TheJadeWarwick: UK judge gives Russel Brand 10 years 6 months for “rape”. ",
+                "summary": "RT @TheJadeWarwick: UK judge gives Russel Brand 10 years 6 months for “rape”. \nNo forensic evidence. No DNA. No CCTV. \n\nSame country and sy…",
+                "url": "https://x.com/elonmusk/status/2119991792842260619",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:13:25 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 630,
+                  "views": "366856"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M02_carryover_timeframe",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_carryover",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: chỉ xử lý latest turn, carry timeframe=day và topic=news, query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Còn về robotics thì sao?"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ tìm robotics thôi, vẫn là tin hôm nay"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "timeframe": "day",
+              "topic": "general",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "topic: expected 'news', got 'general'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "timeframe": "day",
+            "topic": "general",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "robotics",
+            "topic": "general",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Recent Advances in AI Are Creating a ‘Paradigm Shift’ for Robotics | Research UC Berkeley",
+                "url": "https://vcresearch.berkeley.edu/news/recent-advances-ai-are-creating-paradigm-shift-robotics",
+                "source": "vcresearch.berkeley.edu",
+                "summary": "In recent months, artificial intelligence agents that can reason, plan and use external tools to accomplish multistep tasks have already reshaped computer coding, online shopping, dinner reservations and cyberattacks.\n\nRobotics might be next.\n\nKen Goldberg, a UC Berkeley roboticist and professor of engineering, said new models make it possible for teams of AI agents to develop robot-control programs, test them in simulated environments and revise the code when something doesn’t work. [...] Traditionally, engineers can directly program the software that tells robots how to perceive objects, plan movements and control their actions, a process called model-based robotics. Or, with model-free robotics, they can train robots to learn behaviors from demonstrations through imitation learning. The first approach requires extensive engineering, while the second needs enormous amounts of data and time. [...] Berkeley-based Ambi Robotics, which specializes in logistics and warehouse order fulfillment, applied the new methods earlier this year to analyze parcel sorting data and test updates to robot behavior. Tests showed an increased capacity of over 15,000 packages sorted annually per robot; the change is now deployed across 30% of the company’s U.S. fleet.",
+                "score": 0.5054935
+              },
+              {
+                "title": "A3 Association for Advancing Automation",
+                "url": "https://www.automate.org",
+                "source": "automate.org",
+                "summary": "NEW ON-DEMAND TRAINING COURSE\n\n### Introduction to Industrial Robotics\n\nRobotics is transforming every industry. Get the fundamentals in one course.\n\nENROLL NOW\n\n### THE LATEST IN Robotics\n\n#### KUKA at MODEX 2026: AMRs, Palletizing & Smarter Automation\n\n10/30/2026 | KUKA Robotics Corporation\n\n#### Coconut Cult Automates to Sustain Rapid Growth\n\n10/30/2026 | KUKA Robotics Corporation\n\n#### Online Medical Retailer Supports Rapid Growth with Mobile Automation [...] 10/30/2026 | KUKA Robotics Corporation\n\n#### Automated Trailer Unloading with KUKA Improves Warehouse Efficiency\n\n10/30/2026 | KUKA Robotics Corporation\n\n#### Breaking New Ground at KUKA Connexions 2026\n\n10/30/2026 | KUKA Robotics Corporation\n\n### THE LATEST IN Vision & Imaging\n\n#### Automating Machine Tools with KUKA Robots at IMTS 2026\n\n10/30/2026 | KUKA Robotics Corporation\n\n#### In the Global Race to Build Better Batteries, SinceVision Tackles the Friction of the Factory Floor [...] 10/22/2026 | Macnica Americas\n\n#### FPGA Accelerators for Industrial Edge AI Inspection\n\n10/22/2026 | Macnica Americas\n\n#### Reynolds & Moore Launches Training Path for Physical AI Safety Based on NVIDIA IGX™\n\n10/21/2026 | Reynolds & Moore\n\n#### Formulate Robotics Hopes to Be the “AWS of Physical Production”\n\n10/21/2026 | Association for Advancing Automation\n\nGo to Robotics\n\nGo to Vision & Imaging\n\nGo to Motion Control\n\nGo to AI\n\nRead More From Robotics\n\nRead More From Vision",
+                "score": 0.38131228
+              },
+              {
+                "title": "Practice Makes Precise: At CoRL, NVIDIA and Partners Reveal How Robots Rehearse Delicate Work in Simulation | NVIDIA Blog",
+                "url": "https://blogs.nvidia.com/blog/robotics-simulation-advancements-corl",
+                "source": "blogs.nvidia.com",
+                "summary": "“To me, agentic robotics is the most exciting technological development since the internet in 1995,” said Ken Goldberg, professor of robotics at UC Berkeley and a lead on the VABAR and GaP projects.\n\nAmbi Robotics is exploring GaP for industrial automation.\n\nAmbi Robotics, Bosch Research and Siemens are all exploring GaP for its agentic robotics workflows across diverse industrial scenarios.\n\nLearn more by joining NVIDIA at CoRL.\n\n Categories:\n Robotics [...] The shift from locomotion to manipulation is taking center stage at this week’s Conference on Robot Learning (CoRL) in Austin, Texas, alongside the rise of agentic robotics — a new paradigm that integrates frontier agents to create interpretable code for physical robotics systems.\n\nAt CoRL, NVIDIA is introducing new open robotics technologies, including world action models, simulation tools, benchmarks and agentic workflows. [...] Walden Robotics is using Isaac Sim’s photorealistic rendering to train and evaluate its general-purpose robot in virtual environments for manufacturing and logistics, while Dexmate is exploring how coding agents can rehearse and refine manipulation strategies in Isaac Sim before executing them on its Vega robot.",
+                "score": 0.36581963
+              },
+              {
+                "title": "Pulkit Agrawal (Eka Robotics): Why Robots Need Practice to Master the Physical World | Physical AI",
+                "url": "https://www.youtube.com/watch?v=3CIM4Cr0kM4",
+                "source": "youtube.com",
+                "summary": "MIT associate professor and Eka Robotics cofounder Pulkit Agrawal explains the difference between planning a task and physically executing it. He argues that broader skills must be matched by speed, precision and reliability before robots become products people want to use. [...] ### Transcript\n[0:00] [music]\n[0:07] I'll tell you a bit about what we are doing at EKA. So if you think about robotics, I think there are two problems that need to be solved, right? One problem is planning, another is control.\n[0:17] So suppose you tell a robot, make me dinner. It needs to, you know, go to the fridge [snorts] and figure out what vegetables to take out, keep them on the [...] [10:58] by trial and error. And because these systems could do trial and error for billions and billions of examples, they mastered these things and found strategies which are better than humans.\n[11:08] But if we want to bring these ideas into robotics, there is a big problem. You know, imagine if you put a robot in the\n[11:16] real world and it has to go practice things. You know, it's going to break itself. It's going to break objects.",
+                "score": 0.32193998
+              },
+              {
+                "title": "Robotics | Automation World",
+                "url": "https://www.automationworld.com/factory/robotics",
+                "source": "automationworld.com",
+                "summary": "# Robotics\n\naw_podcast_imageaw\\_podcast\\_image\n\n## Robots Love Repetition. Robots Love Repetition. Why Robotic Machine-Tending Makes Sense (Particularly For Smaller Shops)\n\nAutomation World: Gets Your Questions Answered\n\nMitsubishi Electric Automation's Patrick Varley explores using robotic assets to overcome industrial labor and skill shortages.\n\nNov. 5, 2026\n\nCo-pilot Chris McNamara\n\nrobot fashionrobot fashion\n\n## Work It! Automation For The Fashion Runway\n\nOct. 30, 2026 [...] Oct. 30, 2026\n\n01_edgeedition_photos_kassowrobots01\\_edgeedition\\_photos\\_kassowrobots\n\n## Cobots And AMRs: Streamlining Flexibility And Accuracy In Industrial Workplaces\n\nOct. 27, 2026\n\nawgyqawebawgyqaweb\n\n## Robotics ROI\n\nAutomation World: Gets Your Questions Answered\n\nOct. 27, 2026\n\nSarah Mattalian [...] Oct. 20, 2026\n\nstopwatch quick takestopwatch quick take\n\n## Quick Take: Robots Need The Bigger Picture\n\nOct. 19, 2026\n\nawgyqawebawgyqaweb\n\n## 'Anyone Can Program': How Usability Is Driving Cobot Innovation\n\nAutomation World: Gets Your Questions Answered\n\nOct. 8, 2026\n\n# Looking for Something?",
+                "score": 0.31431407
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M03_correction_handle",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên thường, sửa Sam Altman→Andrej Karpathy, dùng handle karpathy và limit=3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tweet mới nhất của Sam Altman"
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, của Andrej Karpathy"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 3 tweet mới nhất nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "andrejkarpathy",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'karpathy', got 'andrejkarpathy'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "andrejkarpathy",
+            "limit": 3
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "JSONDecodeError",
+            "message": "Expecting value: line 1 column 1 (char 0)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "M04_clarify_then_url",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: sau khi được cung cấp URL, latest turn xác nhận chỉ đọc link đó → read_url đúng url."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài này hộ mình"
+        },
+        {
+          "role": "user",
+          "content": "https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Chỉ đọc đúng link đó thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://anthropic.com/news/claude"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://anthropic.com/news/claude"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://anthropic.com/news/claude",
+            "items": [
+              {
+                "title": "https://anthropic.com/news/claude",
+                "url": "https://anthropic.com/news/claude",
+                "source": "anthropic.com",
+                "summary": "[Skip to main content](https://www.anthropic.com/news/claude#main-content)\n\nA 404 poem byClaude Fable 5Claude Opus 5.5Claude Sonnet 5.5Claude Haiku 5.5\n\nYou came"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M05_correction_limit",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_arg_correction",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: map tên Elon Musk, carry handle elonmusk, sửa limit 10→3."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 10 tweet mới nhất của Elon Musk"
+        },
+        {
+          "role": "user",
+          "content": "Cho mình 3 thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn của Elon Musk nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "elonmusk",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "limit": 3,
+              "screenname": "elonmusk"
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "limit": 3,
+            "screenname": "elonmusk"
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "elonmusk",
+            "items": [
+              {
+                "title": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any fur",
+                "summary": "RT @MegynKellyShow: .@MegynKelly on the absolute double standard in the Russell Brand sentencing: “If you needed any further proof that thi…",
+                "url": "https://x.com/elonmusk/status/2119996001490768028",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:30:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1171,
+                  "views": "500966"
+                }
+              },
+              {
+                "title": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 m",
+                "summary": "RT @firesidealpha: JUST IN: Memphis Mayor reveals SpaceX data center taxes more than doubled to $54 million, after $25 million last year ma…",
+                "url": "https://x.com/elonmusk/status/2119993726898774521",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:21:06 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 356,
+                  "views": "439599"
+                }
+              },
+              {
+                "title": "RT @ricwe123: The Germans are learning what mass immigration really means.",
+                "summary": "RT @ricwe123: The Germans are learning what mass immigration really means.\n\n\"Wir schaffen das\" https://t.co/pEQc1OMbao",
+                "url": "https://x.com/elonmusk/status/2119992481156829218",
+                "source": "@elonmusk",
+                "date": "Tue Nov 10 03:16:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1758,
+                  "views": "420832"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "M06_switch_tool",
+      "phase": "B",
+      "suite": "base",
+      "case_suite": "base",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: explicitly bỏ Twitter, chuyển sang web_search news, giữ chủ đề OpenAI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về OpenAI trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Bỏ Twitter, chuyển sang tìm trên web tin tức đi"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề OpenAI"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "OpenAI",
+              "timeframe": "month",
+              "topic": "news",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": "",
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "OpenAI",
+            "timeframe": "month",
+            "topic": "news",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "OpenAI",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "OpenAI",
+                "url": "https://tavily.com/knowledge/company/p4PyTakV77G9",
+                "source": "tavily.com",
+                "summary": "# OpenAI\nID: p4PyTakV77G9\nWebsite: www.openai.com\nHeadquarters: San Francisco, CA, United States\nLinkedIn: www.linkedin.com/company/openai · 11,529,792 followers\nIndustry: Research Services\nIndustry codes: SIC 87, 873, NAICS 54, 541\nCompany type: Partnership\nSocial profiles: www.facebook.com/openai, www.twitter.com/openai, www.crunchbase.com/organization/openai, www.instagram.com/openai.gpt, www.instagram.com/openai, www.youtube.com/@openai, www.youtube.com/openai, github.com/openai [...] Description: OpenAI is a company that believes in research and development to lead to artificial general intelligence, a system that can solve human-level problems. [...] ## Products and services\nKeywords: research & development, emerging ai software, openai, artificial intelligence machine learning, artificial general intelligence, development, research, human-level problems, technology, application-software, artificial-intelligence, platform",
+                "score": 0.90593183
+              },
+              {
+                "title": "Setting a new standard for responsible AI infrastructure | OpenAI",
+                "url": "https://openai.com/index/setting-new-standard-responsible-ai-infrastructure",
+                "source": "openai.com",
+                "summary": "The promise of AI is that it gives people more power to shape their own futures. It can help someone learn a new skill, build a business, or solve a problem that was previously out of reach. Building more computing infrastructure capacity in the United States can help lower the cost of delivering AI, put these tools in more people’s hands, and ensure America stays at the forefront of the technology. [...] protect residents, and ensure that the benefits of AI infrastructure are broadly shared. [...] Create opportunities for local workers and businesses.We’ll publish the jobs we expect to create, work with unions and training providers to help residents prepare for them, and report annually on hiring and apprenticeships. We’ll also make sustained investments in priorities residents help select.",
+                "score": 0.72231215
+              },
+              {
+                "title": "Making it easier for websites to express AI training preferences | OpenAI",
+                "url": "https://openai.com/index/helping-websites-express-ai-training-preferences",
+                "source": "openai.com",
+                "summary": "Audio 1\n\nShare\n\nToday, we’re announcing that OpenAI will honor a common signal⁠(opens in a new window) in robots.txt, the file that lets websites express their preferences about the use of their content for foundational generative AI training. This voluntary effort makes it easier for publishers and website operators to communicate the same preference to multiple participating providers at once. [...] API Platform\n   Overview\n   API Log In(opens in a new window)\n   Docs(opens in a new window)\n\nBusiness\n   Overview\n   Solutions\n   Resources\n   Plugins\n   Customer Stories\n   Partner Network\n   Contact Sales\n\nDevelopers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News [...] This draws on the ongoing work⁠(opens in a new window) of the Internet Engineering Task Force’s (IETF) AI Preferences working group. We’re joining other participants in the working group in today’s announcement of this shared signal, and believe this strengthens our continued participation in the IETF standards discussions. OpenAI will continue to adapt its practices as those conversations and the landscape continue to evolve in view of appropriate controls and fairness.",
+                "score": 0.5931622
+              },
+              {
+                "title": "OpenAI to acquire Pierre Computer Company, Inc.",
+                "url": "https://openai.com/index/openai-to-acquire-pierre",
+                "source": "openai.com",
+                "summary": "Today we're announcing that OpenAI will acquire Pierre Computer Company, Inc⁠(opens in a new window). (“Pierre”), the company behind Code Storage⁠(opens in a new window) and a family of standout open-source developer tools. If you’ve browsed files or reviewed a change in the Codex app, you’ve already used Pierre’s Trees and Diffs libraries. We’re excited to work with the Pierre team to build on the Git workflows that developers already rely on and adapt them to how teams work with coding [...] Business\n   Overview\n   Solutions\n   Resources\n   Plugins\n   Customer Stories\n   Partner Network\n   Contact Sales\n\nDevelopers\n   Plugins(opens in a new window)\n   Models(opens in a new window)\n   Docs(opens in a new window)\n   Resources(opens in a new window)\n   Developer Forum(opens in a new window)\n\nCompany\n   About Us\n   Our Charter\n   Careers\n   News\n\nSupport\n   Help Center(opens in a new window)\n   OpenAI Status(opens in a new window) [...] Skip to main content\n\n\n\nLog inTry ChatGPT(opens in a new window)\n\n   Research\n   Products\n   Business\n   Developers\n   Company\n   Foundation(opens in a new window)\n\nOpenAI to acquire Pierre Computer Company, Inc. | OpenAI\n\nNovember 4, 2026\n\nCompany\n\n# OpenAI to acquire Pierre Computer Company, Inc.\n\nExpanding Codex’s tools for building, understanding, and reviewing code.\n\nShare\n\nCraftsmanship meets scale for the agentic era",
+                "score": 0.5100334
+              },
+              {
+                "title": "Community safety report and new protections for teens",
+                "url": "https://openai.com/index/community-safety-report-and-new-protections-for-teens",
+                "source": "openai.com",
+                "summary": "Keeping communities safe⁠ continues to be a top priority for OpenAI. Our work includes bringing imminent threats of violence to the attention of law enforcement, and we made over 200 law enforcement referrals in Q3 2026.These referrals are making apositive⁠(opens in a new window)difference⁠(opens in a new window) in disrupting violent plots, and we continue to rely on mental health and behavioral experts to help us assess difficult cases.",
+                "score": 0.459586
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

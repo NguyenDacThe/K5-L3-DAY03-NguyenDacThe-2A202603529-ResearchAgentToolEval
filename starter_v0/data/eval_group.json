@@ -3,5 +3,103 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_deduplicate_supplied_sources",
+      "phase": "B",
+      "query": "Lọc nguồn trùng URL trong danh sách này, giữ nguồn xuất hiện đầu tiên: [{\"url\":\"https://example.com/news#first\",\"title\":\"Nguồn A\"},{\"url\":\"https://example.com/news#second\",\"title\":\"Nguồn A trùng\"},{\"url\":\"https://example.org/report\",\"title\":\"Nguồn B\"}]. Chỉ dùng dữ liệu đã cung cấp, không tìm web.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [{"name": "deduplicate_sources", "args": {"items": [
+          {"url": "https://example.com/news#first", "title": "Nguồn A"},
+          {"url": "https://example.com/news#second", "title": "Nguồn A trùng"},
+          {"url": "https://example.org/report", "title": "Nguồn B"}
+        ]}}]
+      },
+      "metadata": {"what_it_tests": "Route supplied source deduplication to the new local tool, preserving all input items for tool execution rather than searching or silently deleting items in model arguments."}
+    },
+    {
+      "id": "G02_telegram_confirmation", "phase": "B",
+      "query": "Đăng bản nháp 'AI digest tuần này' lên kênh Telegram nghiên cứu giúp tôi.",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"what_it_tests": "Yêu cầu đăng chưa phải xác nhận; phải hỏi yes_no trước khi gọi send."}
+    },
+    {
+      "id": "G03_missing_article_url", "phase": "B",
+      "query": "Đọc bài báo này và cho tôi ba ý chính, tôi chưa gửi đường dẫn.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Không bịa URL khi người dùng chưa cung cấp."}
+    },
+    {
+      "id": "G04_missing_account", "phase": "B",
+      "query": "Lấy 3 bài đăng mới nhất từ một tài khoản X cho tôi; tôi chưa nói tài khoản nào.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Không mặc định tài khoản nổi tiếng thay cho handle thiếu."}
+    },
+    {
+      "id": "G05_weekly_news", "phase": "B",
+      "query": "Tìm tin tức trên web về robotics trong tuần qua, lấy 2 kết quả.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "robotics", "topic": "news", "timeframe": "week", "max_results": 2}}]},
+      "metadata": {"what_it_tests": "Tách chủ đề robotics khỏi topic=news và timeframe=week."}
+    },
+    {
+      "id": "G06_changed_draft_reconfirmation", "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Chuẩn bị đăng 'AI digest A' lên kênh nghiên cứu Telegram."},
+        {"role": "assistant", "content": "Bạn xác nhận đăng nguyên văn AI digest A lên kênh nghiên cứu không?"},
+        {"role": "user", "content": "Chưa xác nhận. Đổi nội dung thành 'AI digest B' rồi hỏi lại tôi trước khi gửi."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"what_it_tests": "Sửa nội dung không phải xác nhận; hỏi lại đối với bản nháp mới."}
+    },
+    {
+      "id": "G07_correct_account_and_limit", "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Lấy 4 tweet mới nhất của sama."},
+        {"role": "assistant", "content": "Bạn muốn lấy bài của sama đúng không?"},
+        {"role": "user", "content": "Sửa lại: tài khoản karpathy, chỉ lấy 2 tweet."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "karpathy", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Giá trị handle và limit mới nhất ghi đè ngữ cảnh cũ."}
+    },
+    {
+      "id": "G08_supply_missing_url", "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Đọc bài báo này giúp tôi."},
+        {"role": "assistant", "content": "Bạn gửi URL của bài báo nhé?"},
+        {"role": "user", "content": "URL là https://example.com/research-report"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://example.com/research-report"}}]},
+      "metadata": {"what_it_tests": "Sau khi đã nhận URL thì gọi fetch, không hỏi lại."}
+    },
+    {
+      "id": "G09_deduplicate_context_sources", "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Danh sách nguồn đã có: [{\"url\":\"https://example.org/a#one\"},{\"url\":\"https://example.org/a#two\"}]."},
+        {"role": "assistant", "content": "Tôi đã nhận danh sách hai nguồn."},
+        {"role": "user", "content": "Lọc nguồn trùng URL trong danh sách vừa cung cấp, giữ nguồn đầu; dùng tool và không tìm web."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "deduplicate_sources", "args": {"items": [{"url": "https://example.org/a#one"}, {"url": "https://example.org/a#two"}]}}]},
+      "metadata": {"what_it_tests": "Tool mới sử dụng đầy đủ danh sách từ ngữ cảnh trước."}
+    },
+    {
+      "id": "G10_correct_news_timeframe", "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tìm tin tức robotics trên web trong tháng qua, 2 kết quả."},
+        {"role": "assistant", "content": "Tôi ghi nhận chủ đề robotics, tháng qua, 2 kết quả."},
+        {"role": "user", "content": "Đổi sang tin hôm nay, giữ chủ đề và số kết quả."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "robotics", "topic": "news", "timeframe": "day", "max_results": 2}}]},
+      "metadata": {"what_it_tests": "Sửa timeframe nhưng giữ query, topic và số kết quả từ ngữ cảnh."}
+    }
+  ]
 }

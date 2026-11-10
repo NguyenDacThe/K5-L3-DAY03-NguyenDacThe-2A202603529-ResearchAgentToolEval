@@ -1,0 +1,277 @@
+tools:
+- name: clarify
+  description: Ask the user one question and PAUSE. Use for missing required inputs
+    or confirmation before publication. Explicitly pass response_type=text for missing
+    research input, yes_no for Telegram confirmation or publication-preparation intent.
+    Do not use when the information already exists in conversation.
+  parameters:
+    type: object
+    properties:
+      question:
+        type: string
+        default: ''
+        description: Câu hỏi
+      response_type:
+        type: string
+        enum:
+        - text
+        - yes_no
+        - choice
+        default: text
+        description: Kiểu trả lời
+      options:
+        type: array
+        default: []
+        items:
+          type: string
+        description: Các lựa chọn
+    required:
+    - question
+    - response_type
+- name: timeline
+  description: Lấy các bài đăng gần đây.
+  parameters:
+    type: object
+    properties:
+      screenname:
+        type: string
+        default: ''
+        description: Actual X username without @ or spaces, not a display name. Resolve
+          known public identities to handles; clarify if ambiguous.
+      limit:
+        type: integer
+        default: 5
+        description: Số lượng
+    required:
+    - screenname
+- name: social_search
+  description: Search X/Twitter posts ONLY when the CURRENT active request explicitly
+    asks for social posts about a topic. NEVER call for a web-only or web-news request,
+    after the user abandons social and switches to web, or merely because a topic
+    also appears in old social context. Do not add social_search as extra coverage.
+    Use timeline for one account instead.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Từ khóa
+      search_type:
+        type: string
+        enum:
+        - Latest
+        - Top
+        default: Latest
+        description: Cách sắp xếp
+      limit:
+        type: integer
+        default: 5
+        description: Số lượng
+    required:
+    - query
+- name: lookup
+  description: Search the WEB for the currently active research topic. Use for web
+    information or web news; explicitly set topic=news for news and topic=general
+    otherwise. A web-only request does NOT also require social_search. After switching
+    from social to web, this is the only search tool unless the latest active request
+    explicitly asks for both sources.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: The subject only; keep the topic from conversation and do not
+          append news/today/time-window words.
+      topic:
+        type: string
+        enum:
+        - general
+        - news
+        default: general
+        description: Explicitly news for news requests; general for other web research.
+          Never issue a second lookup with another topic for the same request.
+      timeframe:
+        type: string
+        enum:
+        - day
+        - week
+        - month
+        - year
+        default: week
+        description: Khoảng thời gian
+      max_results:
+        type: integer
+        default: 5
+        description: Số kết quả
+    required:
+    - query
+- name: fetch
+  description: Read the actual supplied HTTP(S) URL. Use after the user provides an
+    article URL. Never invent a URL; call clarify text when missing. This tool does
+    not search for articles.
+  parameters:
+    type: object
+    properties:
+      url:
+        type: string
+        default: ''
+        description: Địa chỉ
+    required:
+    - url
+- name: format
+  description: Format already supplied or retrieved items into a digest. Do not search
+    or publish. Use the actual items and source URLs; format once then return a text
+    answer, without calling format repeatedly.
+  parameters:
+    type: object
+    properties:
+      items:
+        type: array
+        default: []
+        description: Danh sách item
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+            url:
+              type: string
+            source:
+              type: string
+            summary:
+              type: string
+            section:
+              type: string
+      template:
+        type: string
+        enum:
+        - brief
+        - sections
+        - bullets
+        - thread
+        - daily_ai_vn
+        default: sections
+        description: Khuôn
+      headline:
+        type: string
+        default: ''
+        description: Tiêu đề
+    required:
+    - items
+    - template
+- name: deduplicate_sources
+  description: Remove duplicate source URLs from already available items, keeping
+    the first item and original order. Use when asked to deduplicate supplied sources
+    or merge fetched results before formatting. Does not search, fetch URLs, verify
+    facts, or send content.
+  parameters:
+    type: object
+    properties:
+      items:
+        type: array
+        description: Source objects with absolute HTTP(S) URLs. Ignore URL fragments
+          and host casing for duplicates; preserve query strings and paths.
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+            title:
+              type: string
+            summary:
+              type: string
+            source:
+              type: string
+          required:
+          - url
+    required:
+    - items
+- name: send
+  description: Publish approved text to Telegram. This is an external write action,
+    never a way to answer a user. Call only after explicit approval of the exact unchanged
+    draft and destination; confirmed must be true only for that approval. For an initial
+    publish request, ask clarify yes_no first. Never send a draft, missing details,
+    unconfirmed or canceled request.
+  parameters:
+    type: object
+    properties:
+      text:
+        type: string
+        default: ''
+        description: Nội dung
+      confirmed:
+        type: boolean
+        default: false
+        description: Cờ xác nhận
+    required:
+    - text
+- name: policy
+  description: Tìm trong tài liệu nội bộ.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Truy vấn
+      policy_area:
+        type: string
+        enum:
+        - all
+        - ai_research
+        - source_citation
+        - data_privacy
+        - external_publishing
+        - tool_usage
+        default: all
+        description: Nhóm
+      top_k:
+        type: integer
+        default: 3
+        description: Số mục
+    required:
+    - query
+- name: papers
+  description: Tìm bài báo khoa học.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Từ khóa
+      max_results:
+        type: integer
+        default: 5
+        description: Số lượng
+      sort_by:
+        type: string
+        enum:
+        - relevance
+        - lastUpdatedDate
+        - submittedDate
+        default: relevance
+        description: Sắp xếp
+    required:
+    - query
+- name: paper_text
+  description: Lấy nội dung text của một bài báo.
+  parameters:
+    type: object
+    properties:
+      arxiv_url:
+        type: string
+        default: ''
+        description: ID hoặc địa chỉ
+      max_pages:
+        type: integer
+        default: 5
+        description: Số trang
+      max_chars:
+        type: integer
+        default: 8000
+        description: Số ký tự
+    required:
+    - arxiv_url

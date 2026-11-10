@@ -1,0 +1,5 @@
+{
+  "parent": "v2",
+  "hypothesis": "One explicit routing policy with argument conventions and source/action boundaries reduces ambiguity, duplicate calls and unsafe publication routing.",
+  "created_at": "2026-11-10T06:20:28+00:00"
+}

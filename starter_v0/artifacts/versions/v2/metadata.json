@@ -1,0 +1,5 @@
+{
+  "parent": "v1",
+  "hypothesis": "Requiring explicit Telegram confirmation fixes premature send routing without regressing research and clarification.",
+  "created_at": "2026-11-10T05:46:06+00:00"
+}
