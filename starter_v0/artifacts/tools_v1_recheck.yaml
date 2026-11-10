@@ -1,0 +1,258 @@
+tools:
+- name: clarify
+  description: Ask one concise question when required information is missing or ambiguous.
+    Use before acting when an account, URL, or explicit send confirmation is absent.
+    Do not guess.
+  parameters:
+    type: object
+    properties:
+      question:
+        type: string
+        default: ''
+        description: C?u h?i
+      response_type:
+        type: string
+        enum:
+        - text
+        - yes_no
+        - choice
+        default: text
+        description: Ki?u tr? l?i
+      options:
+        type: array
+        default: []
+        items:
+          type: string
+        description: Các lựa chọn
+    required:
+    - question
+- name: timeline
+  description: Retrieve recent posts from a named X account. Use screenname without
+    @. Do not use for keyword searches or when the account is unknown.
+  parameters:
+    type: object
+    properties:
+      screenname:
+        type: string
+        default: ''
+        description: Account handle without @; ask if unknown.
+      limit:
+        type: integer
+        default: 5
+        description: Số lượng
+    required:
+    - screenname
+- name: social_search
+  description: Search X posts by keyword or phrase. Use search_type=Latest by default
+    and Top for popularity requests. Do not use for one named account timeline.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Từ khóa
+      search_type:
+        type: string
+        enum:
+        - Latest
+        - Top
+        default: Latest
+        description: Latest by default; Top for popularity.
+      limit:
+        type: integer
+        default: 5
+        description: Số lượng
+    required:
+    - query
+- name: lookup
+  description: Search the web. Use topic=news for current news and general otherwise.
+    Set timeframe only if the user specifies one (day, week, month, year); omit when
+    unspecified. Do not use for a supplied URL or internal policy.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Truy vấn
+      topic:
+        type: string
+        enum:
+        - general
+        - news
+        default: general
+        description: Use news for news searches, general otherwise.
+      timeframe:
+        type: string
+        enum:
+        - day
+        - week
+        - month
+        - year
+        description: Optional; omit unless user specifies a period.
+      max_results:
+        type: integer
+        default: 5
+        description: Số kết quả
+    required:
+    - query
+- name: fetch
+  description: Read a specific URL supplied by the user. Do not invent URLs or use
+    for general web discovery.
+  parameters:
+    type: object
+    properties:
+      url:
+        type: string
+        default: ''
+        description: Địa chỉ
+    required:
+    - url
+- name: format
+  description: Format already retrieved items as a digest; does not search. Use only
+    when organizing existing evidence.
+  parameters:
+    type: object
+    properties:
+      items:
+        type: array
+        default: []
+        description: Danh sách item
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+            url:
+              type: string
+            source:
+              type: string
+            summary:
+              type: string
+            section:
+              type: string
+      template:
+        type: string
+        enum:
+        - brief
+        - sections
+        - bullets
+        - thread
+        - daily_ai_vn
+        default: sections
+        description: Khuôn
+      headline:
+        type: string
+        default: ''
+        description: Tiêu đề
+    required:
+    - items
+    - template
+- name: send
+  description: Send text to the configured Telegram destination only after the user
+    explicitly confirms the exact text and destination. Always require confirmed=true;
+    a request to send alone is not confirmation.
+  parameters:
+    type: object
+    properties:
+      text:
+        type: string
+        default: ''
+        description: Nội dung
+      confirmed:
+        type: boolean
+        default: false
+        description: True only after explicit user confirmation of exact text and
+          destination.
+    required:
+    - text
+- name: policy
+  description: Search local company policy documents. Use for internal policy questions;
+    do not use for public web research.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Truy vấn
+      policy_area:
+        type: string
+        enum:
+        - all
+        - ai_research
+        - source_citation
+        - data_privacy
+        - external_publishing
+        - tool_usage
+        default: all
+        description: Nhóm
+      top_k:
+        type: integer
+        default: 3
+        description: Số mục
+    required:
+    - query
+- name: papers
+  description: Search arXiv for scholarly papers. Do not use for ordinary web or news
+    searches.
+  parameters:
+    type: object
+    properties:
+      query:
+        type: string
+        default: ''
+        description: Từ khóa
+      max_results:
+        type: integer
+        default: 5
+        description: Số lượng
+      sort_by:
+        type: string
+        enum:
+        - relevance
+        - lastUpdatedDate
+        - submittedDate
+        default: relevance
+        description: Sắp xếp
+    required:
+    - query
+- name: paper_text
+  description: Retrieve and extract text from a known arXiv paper URL or ID. Do not
+    use to discover papers.
+  parameters:
+    type: object
+    properties:
+      arxiv_url:
+        type: string
+        default: ''
+        description: ID hoặc địa chỉ
+      max_pages:
+        type: integer
+        default: 5
+        description: Số trang
+      max_chars:
+        type: integer
+        default: 8000
+        description: Số ký tự
+    required:
+    - arxiv_url
+- name: summarize_sources
+  description: Count provided research items by source label or URL domain. Local
+    only; use to assess source diversity. Does not search or verify sources.
+  parameters:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            source:
+              type: string
+            url:
+              type: string
+        description: Already retrieved items to count.
+    required:
+    - items
