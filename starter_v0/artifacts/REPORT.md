@@ -1,159 +1,72 @@
-# Day 03 Lab v2 Report — Research Agent
+# Research Agent ? Nguyen Dac The
 
-> File này gồm 2 phần, deadline khác nhau:
-> - **PHẦN A — Giới thiệu agent**: ngắn gọn 1 trang để team khác hiểu nhanh agent có tool gì, làm được gì, thử bằng câu hỏi nào. **Xong trước 16:30** để làm tài liệu phụ trợ khi demo. Có thể làm thành poster HTML/SVG (`artifacts/poster.html` / `poster.svg`) để show cho team cùng zone.
-> - **PHẦN B — Chi tiết / Bằng chứng**: bảng đầy đủ (v0–v3, failure, eval, chat) dựa trên log thật. **Có thể hoàn thiện sau buổi debate để nộp bài.**
+## Part A ? Quick introduction
 
-## Team
+This agent researches public web and X sources, reads supplied URLs, searches local company policies and arXiv, and formats retrieved material into a digest. It asks for missing information and requires explicit confirmation before sending to Telegram.
 
-- Team: VibeCode
-- Members:
-- Provider/model: xkiro / mistralai/mistral-large-2512
+| Tool | Purpose |
+|---|---|
+| clarify | Ask for missing or ambiguous information |
+| timeline | Retrieve recent posts from a named X account |
+| social_search | Search X posts by keywords, sorted Latest or Top |
+| lookup | Search general web or news, optionally time filtered |
+| fetch | Read a supplied URL |
+| format | Format already retrieved evidence as a digest |
+| send | Send a confirmed message to configured Telegram |
+| policy | Search local company policy files |
+| papers | Search arXiv |
+| paper_text | Extract text from a known arXiv paper |
+| summarize_sources | Count supplied items by source/domain locally |
 
----
+Try: ?Find this week?s news about AI research in Vietnam and make a three item digest?; ?Show recent posts from @OpenAI?; ?What does our data privacy policy say about personal data??
 
-# PHẦN A — Giới thiệu agent
+**Local demo:** http://127.0.0.1:8502 (Streamlit, bound to localhost). No public deployment was created.
 
-## A1. Agent này làm được gì
+## Part B ? Evidence
 
-Research Lab là trợ lý nghiên cứu tìm tin trên web, tìm bài mạng xã hội, đọc URL và tổng hợp thông tin có nguồn. Giao diện Streamlit giữ lịch sử hội thoại để người dùng bổ sung tài khoản hoặc URL khi agent hỏi lại; hiện là bản thử nghiệm v0/v1.
+### B1. Version evidence
 
-**Link dùng thử (deploy):**
+Provider: xKiro. Selected model: `mistralai/mistral-large-2512`. Base URL: `https://api.xkiro.com/v1`; change the model with `XKIRO_MODEL` in the local `.env`.
 
-Local: http://localhost:8501 (chỉ dùng trên máy chạy app). Chưa triển khai link public.
+| Version | Base suite result | Notes |
+|---|---:|---|
+| v0 | 17/20 (85%) | Baseline |
+| v1 | 16/18 measured | 2 provider conflicts; v1 recheck passed 17/19 measured with 1 provider conflict |
+| v2 | 16/20 (80%) | Lower than baseline |
+| v3 | 16/20 (80%) | No gain from declaration-only change |
+| v4 | 18/19 measured | 1 provider conflict |
+| v5 | 18/20 (90%) | |
+| v6 | 19/20 (95%) | |
+| v7 | 20/20 (100%) | Latest complete base run |
 
-Khởi chạy: `.\.venv\Scripts\python.exe -m streamlit run app.py` trong `starter_v0`.
-Hướng dẫn: `UI-README.md`. Telegram tắt trong UI; eval base vẫn giữ khai báo send để kiểm tra hành vi xác nhận.
+The v7 improvement includes a narrow provider adapter repair: when the model emits a prose function name with `action=stop`, a question mark, and no valid function name, the adapter maps it to the non-side-effecting `clarify` tool. Unknown actions remain unknown. The regression tests cover these rules. Exact hashes and run paths are in `artifacts/version_log.csv` and `runs/`.
 
-## A2. Tool agent có
+### B2. Remaining eval status
 
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
+The v8 group rerun measured 7 cases and passed all 7; three cases errored. One error exposed an eval comparator bug for lists of dictionaries, now fixed and covered by a test. The other two hit xKiro's daily free-token quota. The prior v7 group run passed 8/10 with no provider errors. The g05 eval input now includes actual source items, and the prompt now says to use a user's answer to an earlier clarification instead of asking again. Rerun `python run_eval.py --provider xkiro --version v8 --suite group --eval-cases data/eval_group.json` after the free quota resets. No paid model was substituted.
 
-| Tên tool | Làm được gì | Tool mới nhóm thêm? |
-|---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-| timeline | lấy bài gần đây của một tài khoản X | không |
-| social_search | tìm bài X theo từ khóa | không |
-| lookup | tìm thông tin/tin tức web qua Tavily | không |
-| fetch | đọc nội dung URL qua Firecrawl | không |
-| format | trình bày dữ liệu đã có thành digest | không |
-| policy | tìm trong bộ chính sách giả lập nội bộ | không |
-| papers | tìm paper arXiv | không |
-| paper_text | tải và trích nội dung paper arXiv | không |
+The first v1 recheck also had one provider conflict (17/19 measured). Rerun it after quota reset if a complete comparison is needed. The latest complete base result is v7, 20/20. The current prompt includes an additional multi-turn follow-up rule from v8; its base suite has not been rerun yet.
 
-Tool mới tự viết: chưa thực hiện ở mốc v1. Các tool bonus arXiv chưa được kiểm thử live trong công việc này.
+### B3. Failure analysis
 
-## A3. Câu hỏi mẫu để thử
+The early base failures were: R03 expanded the search query beyond the user's term; R10/R11 did not consistently call `clarify`; R12 used `response_type=text` instead of `yes_no`. Few-shot examples improved R03 and R10/R12. The malformed clarification normalization cleared R11 in v7. The base v7 run had no failures.
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
+### B4. Team eval
 
-1. Tin AI hôm nay có gì nổi bật?
-2. Lấy 3 tweet mới nhất của @sama.
-3. Tóm tắt bài viết này giúp mình. (Sau câu hỏi của agent, bổ sung URL.)
-4. Tìm các bài đăng về AI trên X.
+`data/eval_group.json` has ten cases, five single-turn and five multi-turn. The latest group run is quota-limited as described above. See `runs/v7_B_group_xkiro_20261110T120453266866.json` and `runs/v8_B_group_xkiro_20261110T120851110864.json`.
 
----
+### B5. Live chat and source review
 
-# PHẦN B — Chi tiết / Bằng chứng
+Four live turns are recorded in `transcripts/v3_xkiro_20261110T110620735791.transcript.json`: web lookup plus digest formatting, local policy search, clarification for a missing X account, and timeline retrieval after the user supplied `OpenAI`.
 
-## B1. Version Evidence
+I spot-checked the digest's five source links. Nippon.com and VietnamPlus support the Vietnam?Japan AI/semiconductor cooperation summary. The Viet Nam News item is about AI in communications and brand visibility; its national-policy connection is narrower than the digest wording suggests. The FPT/Quantum Zeitgeist article is discoverable at [this URL](https://quantumzeitgeist.com/fpt-proposes-quantum-leap-ways-tech/); the transcript URL omitted the trailing slash. The transcript's VIR link was the wrong article (Korean firms' investment plans); the summit information is at [the correct VIR article](https://vir.com.vn/first-vietnam-south-korea-ai-and-semiconductor-conference-set-to-open-164629.html). The OpenAI Control Room and GPT-6 Cyber claims in the X digest have corresponding [official Control Room](https://openai.com/index/introducing-control-room/) and [official GPT-6 Cyber](https://openai.com/index/introducing-gpt-6-cyber/) posts. Other X claims were not independently verified.
 
-Điểm lấy từ run JSON thật; metric trước/sau là case_accuracy.
+### B6. UI, tools, and tests
 
-| Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
-|---|---|---|---:|---:|---|
-| v0 | baseline | Đo starter | — | 65.00% | `runs/v0_B_base_xkiro_20261110T103347177059.json` |
-| v1 | system_prompt.md | Hỏi clarify thay vì tự đoán khi thiếu tài khoản hoặc URL sẽ sửa R10/R11. | 65% | 72.22% | `runs/v1_B_base_xkiro_20261110T104702359334.json` |
-| v2 | Chưa thực hiện | | | | |
-| v3 | Chưa thực hiện | | | | |
+The Streamlit UI is available locally at `http://127.0.0.1:8502`; it is bound to localhost. `AppTest` reports 0 exceptions and the health endpoint returns HTTP 200. I fixed the environment-loader argument error and a Windows console Unicode crash in chat output. A public deployment was not created; exposing the unauthenticated UI would expose provider-backed tool access.
 
-| Version | Passed / total | Measured cases | Provider errors | Routing | Arguments | Multiturn |
-|---|---|---:|---:|---:|---:|---:|
-| v0 | 13/20 | 20 | 0 | 85.00% | 65.00% | 66.67% |
-| v1 | 13/20 | 18 | 2 | 88.89% | 72.22% | 50.00% |
+Added `summarize_sources`, a local-only source/domain counter. Completed the starter TODO tool tests and added regression coverage for malformed provider tool calls and dictionary-list eval comparison. Final offline suite: **91 passed, 0 failed, 0 skipped**.
 
-case_accuracy loại provider_error khỏi mẫu số. Không kết luận tăng chất lượng chỉ từ điểm này khi số measured_cases khác nhau.
+### B7. Local model challenge
 
-## B2. Failure Analysis
-
-Phân tích baseline v0. Nhãn case khác lỗi quan sát ở R03/R13: tool đúng, query không khớp bộ chấm.
-
-| Case ID | Observed mismatch | Actual Tool Calls | What Failed | Fix hypothesis |
-|---|---|---|---|---|
-| R03 | wrong_arg_value | lookup | query chứa cả câu/ngày; bộ chấm mong AI | Mô tả query là từ khóa, thời gian ở timeframe |
-| R10 | missing_tool_call | timeline(screenname=Sam Altman) | Tự đoán tài khoản thay vì hỏi | v1: clarify khi thiếu tài khoản |
-| R11 | missing_tool_call | fetch(url=https://vnexpress.net) | Tự đoán URL | v1: clarify khi thiếu URL |
-| R12 | missing_tool_call | Tên tool không hợp lệ; args lồng send | Không gọi clarify yes_no; giả lập đồng ý khi hết giờ | Vòng sau: xác nhận rõ ràng, không coi im lặng là đồng ý |
-| R13 | wrong_arg_value | lookup + social_search | Gọi đủ tool nhưng query của lookup không khớp AI | Quy ước query |
-| M02 | wrong_arg_value | lookup | timeframe đúng; query không khớp robotics | Quy ước query |
-| M03 | wrong_arg_value | timeline(screenname=Andrej Karpathy, limit=3) | Dùng tên người thay vì handle karpathy | Mô tả handle và quy tắc ánh xạ/hỏi lại |
-
-provider_error_cases=0 không chứng minh mọi API tool thành công: v0 có tool timeline trả JSONDecodeError. Cần kiểm tra tool_results riêng.
-
-v1 so với v0: cải thiện R13_parallel_web_and_tweets, M02_carryover_timeframe; hồi quy M05_correction_limit, M06_switch_tool.
-
-Mỗi phiên bản mới chạy một lần; biến động ngoài R10/R11 chưa đủ để kết luận do thay đổi prompt.
-
-Kết luận v1: giả thuyết hỏi lại chưa được chứng minh. R10 không trả tool call; R11 lỗi API 409 duplicate request; R12 lỗi TypeError ở đường gọi provider. Vẫn 13/20 case đúng, multiturn giảm từ 66,67% xuống 50%. Cần xử lý/kiểm tra lại lỗi provider và cải tiến hướng dẫn clarify trong vòng tiếp theo.
-
-## B3. Team Eval Cases
-
-List the 10 cases added to `data/eval_group.json` (5 single turn + 5 multi turn).
-
-| Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-|  |  |  |  |
-
-## B4. Live Chat Evidence
-
-Use `transcripts/*.transcript.json`.
-
-| Turn | User Request | Tool Calls | Version Evidence | Outcome |
-|---|---|---|---|---|
-|  |  |  |  |  |
-
-## B5. Bonus Evidence
-
-Only fill if your team did bonus.
-
-| Bonus | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| send (Telegram) |  |  |  |
-| arXiv/company policy |  |  |  |
-| UI (bắt buộc theo Scope) | `app.py`, `analysis/ui_validation.md` | Streamlit, giữ ngữ cảnh, chọn v0/v1, lưu/tải transcript; health check HTTP 200 | Local, chưa public; send bị chặn |
-| Tool unit tests (`tests/`) | `analysis/ui_validation.md` | 65 passed, 17 skipped; gồm 3 test UI mới | 17 TODO chưa hoàn thành; chưa có tool mới |
-
-Tool unit tests: số test đã viết, số bug tìm được trong tool có sẵn (nếu có), và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
-
-## B6. Reflection
-
-- Which fixes belonged in `system_prompt.md`?
-- Which fixes belonged in `tools.yaml`?
-- Which failure needed manual review instead of automatic grading?
-- What would you improve next?
-
-## B7. Small Local Model Challenge (bonus)
-
-Only fill if your team did the local model challenge.
-
-| Version | Model (provider) | Prompt/Tools | case_accuracy | tool_routing | argument | multiturn | Run File |
-|---|---|---|---|---|---|---|---|
-| v3 | (cloud) | v3 |  |  |  |  |  |
-| v3-... | (ollama) | v3 |  |  |  |  |  |
-| v3-... | (ollama) | v3 |  |  |  |  |  |
-| v4-local |  |  |  |  |  |  |  |
-| v5-local |  |  |  |  |  |  |  |
-
-Lỗi đặc thù của model nhỏ (đếm từ run JSON):
-
-| Failure Pattern | Count | Example Case | Fix Tried | Helped? |
-|---|---|---|---|---|
-| wrong / hallucinated tool |  |  |  |  |
-| invalid JSON args (`_invalid_json_arguments`) |  |  |  |  |
-| no tool call / answered directly |  |  |  |  |
-| missed `clarify` |  |  |  |  |
-| repeated / unnecessary calls |  |  |  |  |
-
-- Cái gì giúp model nhỏ gọi tool đúng hơn nhất? Bằng chứng?
-- Bản prompt tối ưu cho local chạy trên model cloud thì sao?
-- Khi nào nhóm sẽ chọn model local thay vì cloud cho agent này?
+Not run. Ollama model comparison remains optional.

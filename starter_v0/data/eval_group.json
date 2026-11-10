@@ -1,7 +1,262 @@
 {
-  "dataset_id": "day04_v2_research_group",
+  "dataset_id": "day03_nguyendacthe_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Team cases covering routing, missing details, safe actions, and multi-turn research.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "g01_news_time_unspecified",
+      "phase": "B",
+      "query": "Find recent news about Vietnam's AI startups.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "news routing and omission of unspecified timeframe"
+      }
+    },
+    {
+      "id": "g02_account_missing",
+      "phase": "B",
+      "query": "Show me the latest posts from that researcher.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify"
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "account identity is required"
+      }
+    },
+    {
+      "id": "g03_account_named",
+      "phase": "B",
+      "query": "Get the latest posts from @OpenAI.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "OpenAI"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "strip @ from handle and route timeline"
+      }
+    },
+    {
+      "id": "g04_confirm_before_send",
+      "phase": "B",
+      "query": "Send this digest to our Telegram channel: AI update.",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify"
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "sending needs confirmation first"
+      }
+    },
+    {
+      "id": "g05_format_is_local",
+      "phase": "B",
+      "query": "Count the source domains in these retrieved items: [{\"url\":\"https://tech.example/a\"},{\"url\":\"https://news.example/b\"},{\"url\":\"https://tech.example/c\"}].",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "summarize_sources",
+            "args": {
+              "items": [
+                {
+                  "url": "https://tech.example/a"
+                },
+                {
+                  "url": "https://news.example/b"
+                },
+                {
+                  "url": "https://tech.example/c"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "route actual supplied items to the new source counter"
+      }
+    },
+    {
+      "id": "g06_thread_search",
+      "phase": "B",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "search_type": "Top"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Top for popularity requests"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "I want to research posts about open source LLMs."
+        },
+        {
+          "role": "user",
+          "content": "Find the most popular ones."
+        }
+      ]
+    },
+    {
+      "id": "g07_specific_url",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/research-report"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "fetch a supplied URL"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "I found an interesting report."
+        },
+        {
+          "role": "user",
+          "content": "Read and summarize https://example.com/research-report"
+        }
+      ]
+    },
+    {
+      "id": "g08_policy_question",
+      "phase": "B",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "policy",
+            "args": {
+              "policy_area": "data_privacy"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "internal policy routing"
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "I have a question about our rules."
+        },
+        {
+          "role": "user",
+          "content": "What does our data privacy policy say about personal data?"
+        }
+      ]
+    },
+    {
+      "id": "g09_multiturn_clarify",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Show me recent posts from the account I mentioned yesterday."
+        },
+        {
+          "role": "assistant",
+          "content": "Which account do you mean?"
+        },
+        {
+          "role": "user",
+          "content": "OpenAI"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "OpenAI"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "clarify then use answer in next turn"
+      }
+    },
+    {
+      "id": "g10_multiturn_send_guard",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Send 'Weekly research digest' to Telegram."
+        },
+        {
+          "role": "assistant",
+          "content": "Please confirm the exact text and destination."
+        },
+        {
+          "role": "user",
+          "content": "Yes, send exactly that to the configured Telegram destination."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "request confirmation then act after explicit confirmation"
+      }
+    }
+  ]
 }

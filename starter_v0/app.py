@@ -39,7 +39,7 @@ def main():
 
     with st.sidebar:
         st.header("Không gian nghiên cứu")
-        version = st.selectbox("Phiên bản thử nghiệm", ["v1", "v0"])
+        version = st.selectbox("Version", ["v8", "v1", "v0"])
         st.caption("xkiro · Model lấy từ cấu hình .env")
         reset = st.button("Cuộc trò chuyện mới", use_container_width=True)
         st.divider()
@@ -47,8 +47,11 @@ def main():
         st.markdown("- Tin AI hôm nay có gì?\n- Tóm tắt 3 tweet của @sama.\n- Tóm tắt bài viết này giúp mình.")
         st.caption("Gửi thêm URL hoặc tài khoản khi trợ lý hỏi lại. Telegram không bật trong giao diện này.")
 
-    artifacts = ROOT / "artifacts" / "versions" / version
-    prompt_path, tools_path = artifacts / "system_prompt.md", artifacts / "tools.yaml"
+    if version == "v8":
+        prompt_path, tools_path = ROOT / "artifacts" / "system_prompt.md", ROOT / "artifacts" / "tools.yaml"
+    else:
+        artifacts = ROOT / "artifacts" / "versions" / version
+        prompt_path, tools_path = artifacts / "system_prompt.md", artifacts / "tools.yaml"
     artifact = artifact_version_dict(build_artifact_version(version, prompt_path, tools_path))
     if reset or st.session_state.get("artifact_id") != artifact["artifact_version"]:
         st.session_state.artifact_id = artifact["artifact_version"]

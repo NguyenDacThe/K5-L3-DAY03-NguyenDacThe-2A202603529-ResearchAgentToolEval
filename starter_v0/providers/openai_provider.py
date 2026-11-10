@@ -7,6 +7,24 @@ from typing import Any
 from providers.base import ModelResponse, ToolCall
 
 
+def normalize_tool_call(name: str, args: dict[str, Any], tools: list[dict[str, Any]] | None) -> tuple[str, dict[str, Any]]:
+    """Recover an explicit declared action when a gateway puts prose in function.name."""
+    declared = {
+        item.get("function", {}).get("name")
+        for item in (tools or [])
+        if item.get("function", {}).get("name")
+    }
+    if name not in declared and args.get("action") in declared:
+        repaired = dict(args)
+        normalized_name = str(repaired.pop("action"))
+        return normalized_name, repaired
+    if name not in declared and args.get("action") == "stop" and "?" in name:
+        # Some tool-capable models encode a clarification as a prose function name
+        # plus action=stop. Convert that non-side-effecting pause into clarify.
+        return "clarify", {"question": name, "response_type": "text"}
+    return name, args
+
+
 class OpenAIProvider:
     """OpenAI Chat Completions provider with normalized tool_calls output."""
 
@@ -17,11 +35,13 @@ class OpenAIProvider:
         base_url: str | None = None,
         default_model: str = "gpt-4o-mini",
         api_key_default: str | None = None,
+        http_client: Any | None = None,
     ) -> None:
         self.api_key_env = api_key_env
         self.api_key_default = api_key_default
         self.base_url = base_url
         self.default_model = default_model
+        self.http_client = http_client
 
     def complete(
         self,
@@ -41,7 +61,7 @@ class OpenAIProvider:
         if not api_key:
             raise RuntimeError(f"Missing API key env var: {self.api_key_env}")
 
-        client = OpenAI(api_key=api_key, base_url=self.base_url)
+        client = OpenAI(api_key=api_key, base_url=self.base_url, http_client=self.http_client)
         kwargs: dict[str, Any] = {
             "model": model or self.default_model,
             "messages": messages,
@@ -65,5 +85,6 @@ class OpenAIProvider:
                 args = {"_invalid_json_arguments": raw_args}
             if not isinstance(args, dict):
                 args = {"_invalid_json_arguments": raw_args}
-            calls.append(ToolCall(name=call.function.name, args=args))
+            name, args = normalize_tool_call(call.function.name, args, tools)
+            calls.append(ToolCall(name=name, args=args))
         return ModelResponse(text=msg.content, tool_calls=calls, raw=resp)

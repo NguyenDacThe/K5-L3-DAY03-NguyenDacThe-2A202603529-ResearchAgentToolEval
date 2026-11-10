@@ -44,7 +44,7 @@ Bonus:
 
 **Setup**
 - [ ] `.env` có provider key + `TAVILY_API_KEY`, `FIRECRAWL_API_KEY`, `RAPIDAPI_KEY`
-- [ ] `python scripts/preflight_provider.py --provider openrouter` pass
+- [ ] `python scripts/preflight_provider.py --provider xkiro` passes (requires `XKIRO_API_KEY`; use `--provider openrouter` for OpenRouter)
 - [ ] `pytest` chạy được: contract test + example test xanh, TODO test đang `skipped`
 
 **Prompt & tool declaration**
@@ -158,7 +158,7 @@ cp .env.example .env
 Fill `.env`. Minimum recommended:
 
 ```bash
-OPENROUTER_API_KEY=...
+OPENROUTER_API_KEY=...  # or XKIRO_API_KEY=... for xKiro
 TAVILY_API_KEY=...
 FIRECRAWL_API_KEY=...
 RAPIDAPI_KEY=...
@@ -170,7 +170,8 @@ Tool setup details are in [TOOL-SETUP.md](TOOL-SETUP.md).
 Preflight:
 
 ```bash
-python scripts/preflight_provider.py --provider openrouter
+python scripts/preflight_provider.py --provider xkiro  # uses XKIRO_API_KEY
+# Or use --provider openrouter
 ```
 
 If preflight fails, fix provider key, dependency, or network before running eval.
