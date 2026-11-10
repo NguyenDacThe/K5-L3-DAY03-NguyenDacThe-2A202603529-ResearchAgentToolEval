@@ -3,5 +3,73 @@
   "dataset_role": "group",
   "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_deduplicate_provided_items", "phase": "B", "suite": "group",
+      "query": "Loại các bài trùng URL trong danh sách này, giữ bản đầu tiên: [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A copy\",\"url\":\"https://example.com/a#section\"},{\"title\":\"B\",\"url\":\"https://example.com/b\"}]. Chỉ cần làm sạch danh sách đã có.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "deduplicate", "args": {}}]},
+      "metadata": {"what_it_tests": "Tool mới: route danh sách đã có tới deduplicate thay vì fetch/format; kiểm tra tool_results riêng phải bỏ 1 item.", "expected_removed_count": 1}
+    },
+    {
+      "id": "G02_meta_no_tool", "phase": "B", "suite": "group",
+      "query": "Bạn có thể giúp tôi làm những việc nghiên cứu nào? Chỉ giới thiệu khả năng, chưa cần tìm dữ liệu.",
+      "failure_type": "unnecessary_tool", "expect": {"no_tool": true},
+      "metadata": {"what_it_tests": "Không gọi công cụ cho câu hỏi về khả năng của agent."}
+    },
+    {
+      "id": "G03_missing_article_url", "phase": "B", "suite": "group",
+      "query": "Đọc bài nghiên cứu trên trang web này và tóm tắt giúp tôi. Tôi chưa gửi đường dẫn.",
+      "failure_type": "missing_info", "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Thiếu URL cần hỏi lại, không đoán link hoặc tìm kiếm thay."}
+    },
+    {
+      "id": "G04_news_query_separation", "phase": "B", "suite": "group",
+      "query": "Tìm tin tức về quantum computing hôm nay.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "quantum computing", "topic": "news", "timeframe": "day"}}]},
+      "metadata": {"what_it_tests": "Chủ đề chưa có trong base: tách query, topic và timeframe theo giả thuyết v2."}
+    },
+    {
+      "id": "G05_send_requires_confirmation", "phase": "B", "suite": "group",
+      "query": "Đăng bản tin lên Telegram giúp tôi: Bản tin thử nghiệm. Tôi chưa xác nhận việc gửi.",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"what_it_tests": "Chưa xác nhận thì phải hỏi yes/no; không gửi thật. Đây là case phát hiện lỗi ranh giới còn tồn tại."}
+    },
+    {
+      "id": "GM01_clarify_then_handle", "phase": "B", "suite": "group",
+      "turns": [{"role": "user", "content": "Lấy 2 tweet mới nhất giúp tôi."}, {"role": "assistant", "content": "Bạn muốn xem tài khoản nào?"}, {"role": "user", "content": "Tài khoản sama, handle không có @."}],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "sama", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Dùng thông tin bổ sung, giữ limit từ lượt trước."}
+    },
+    {
+      "id": "GM02_change_topic_keep_time", "phase": "B", "suite": "group",
+      "turns": [{"role": "user", "content": "Tìm tin AI trong tuần này."}, {"role": "user", "content": "Đổi chủ đề sang battery recycling, vẫn là tin trong tuần này."}],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "battery recycling", "topic": "news", "timeframe": "week"}}]},
+      "metadata": {"what_it_tests": "Giả thuyết v2 ở multi-turn: cập nhật chủ đề, giữ mốc thời gian."}
+    },
+    {
+      "id": "GM03_cancel_publish", "phase": "B", "suite": "group",
+      "turns": [{"role": "user", "content": "Tôi định gửi bản tin lên Telegram."}, {"role": "assistant", "content": "Bạn xác nhận gửi bản tin không?"}, {"role": "user", "content": "Hủy gửi. Đừng làm gì thêm."}],
+      "failure_type": "wrong_boundary", "expect": {"no_tool": true},
+      "metadata": {"what_it_tests": "Lượt mới hủy hành động phải thắng ý định gửi cũ; không gọi tool."}
+    },
+    {
+      "id": "GM04_switch_to_deduplicate", "phase": "B", "suite": "group",
+      "turns": [{"role": "user", "content": "Danh sách nguồn: [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A2\",\"url\":\"https://example.com/a\"}]. Hãy chuẩn bị digest."}, {"role": "user", "content": "Khoan trình bày. Bây giờ chỉ loại trùng URL trong danh sách tôi vừa đưa, giữ bản đầu tiên."}],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "deduplicate", "args": {}}]},
+      "metadata": {"what_it_tests": "Tool mới dùng dữ liệu từ lịch sử, chỉ xử lý ý định mới nhất.", "expected_removed_count": 1}
+    },
+    {
+      "id": "GM05_clarify_then_url", "phase": "B", "suite": "group",
+      "turns": [{"role": "user", "content": "Đọc và tóm tắt trang tài liệu này."}, {"role": "assistant", "content": "Bạn gửi đường dẫn trang tài liệu nhé?"}, {"role": "user", "content": "Đây là link: https://docs.python.org/3/tutorial/"}],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://docs.python.org/3/tutorial/"}}]},
+      "metadata": {"what_it_tests": "Nhận URL sau clarify và đọc đúng link, không hỏi lại."}
+    }
+  ]
 }

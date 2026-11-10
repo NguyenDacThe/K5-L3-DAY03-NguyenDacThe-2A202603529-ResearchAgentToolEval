@@ -14,6 +14,21 @@
 #   - Make the `send` confirmation boundary explicit.
 #   - Declare your new tool(s) at the end of this file.
 tools:
+  - name: deduplicate
+    description: "Loại các item trùng URL từ danh sách đã có, giữ bản đầu tiên. Dùng khi người dùng yêu cầu bỏ nguồn/bài trùng; không tìm dữ liệu mới, không tóm tắt. Bỏ fragment, so scheme/host không phân biệt hoa thường; giữ nguyên query và path. Item thiếu URL được giữ riêng."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "Danh sách item đã được người dùng cung cấp hoặc thu thập; truyền đầy đủ, không tự loại trùng trước khi gọi tool."
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              url: {type: string}
+              summary: {type: string}
+      required: [items]
   # ---------------- Core tools ----------------
   - name: clarify
     description: "Gửi một câu hỏi cho người dùng."
@@ -49,7 +64,7 @@ tools:
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
+        query: {type: string, default: "", description: "Chỉ từ khóa hoặc chủ đề chính người dùng yêu cầu. Giữ nguyên cách viết chủ đề; không thêm tin tức, nổi bật, hôm nay, ngày tháng hoặc câu lệnh trình bày. Loại tin đặt ở topic, thời gian đặt ở timeframe. Trong hội thoại, dùng chủ đề mới nhất."}
         topic: {type: string, enum: [general, news], default: "general", description: "Phân loại"}
         timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "Khoảng thời gian"}
         max_results: {type: integer, default: 5, description: "Số kết quả"}

@@ -39,7 +39,7 @@ def main():
 
     with st.sidebar:
         st.header("Không gian nghiên cứu")
-        version = st.selectbox("Phiên bản thử nghiệm", ["v1", "v0"])
+        version = st.selectbox("Phiên bản thử nghiệm", ["v3", "v2", "v1", "v0"])
         st.caption("xkiro · Model lấy từ cấu hình .env")
         reset = st.button("Cuộc trò chuyện mới", use_container_width=True)
         st.divider()

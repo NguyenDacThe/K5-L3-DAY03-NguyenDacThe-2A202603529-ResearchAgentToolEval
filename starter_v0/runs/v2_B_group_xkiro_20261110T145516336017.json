@@ -1,0 +1,755 @@
+{
+  "run_id": "v2_B_group_xkiro_20261110T145516336017",
+  "version": "v2",
+  "artifact_version": "v2+p68cbef3b0ace+tf81f6d5723da",
+  "prompt_hash": "68cbef3b0ace43b655c6f704ba9101f27a7f4cbe68d5688ada24cbc501262d07",
+  "tools_hash": "f81f6d5723da957081be6144a215f1cccb4cefd3442ac303fb58ad8098fef86a",
+  "phase": "B",
+  "suite": "group",
+  "provider": "xkiro",
+  "model": "mistralai/mistral-large-2512",
+  "system_prompt": "artifacts\\versions\\v2\\system_prompt.md",
+  "tools": "artifacts\\versions\\v2\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group",
+  "dataset_role": "group",
+  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "generated_at": "2026-11-10T14:55:16",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 9,
+    "case_accuracy": 0.9,
+    "tool_routing_accuracy": 0.9,
+    "argument_accuracy": 0.9,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 1
+    }
+  },
+  "results": [
+    {
+      "id": "G01_deduplicate_provided_items",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Tool mới: route danh sách đã có tới deduplicate thay vì fetch/format; kiểm tra tool_results riêng phải bỏ 1 item.",
+        "expected_removed_count": 1
+      },
+      "input": "Loại các bài trùng URL trong danh sách này, giữ bản đầu tiên: [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A copy\",\"url\":\"https://example.com/a#section\"},{\"title\":\"B\",\"url\":\"https://example.com/b\"}]. Chỉ cần làm sạch danh sách đã có.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/a"
+                },
+                {
+                  "title": "A copy",
+                  "url": "https://example.com/a#section"
+                },
+                {
+                  "title": "B",
+                  "url": "https://example.com/b"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              },
+              {
+                "title": "A copy",
+                "url": "https://example.com/a#section"
+              },
+              {
+                "title": "B",
+                "url": "https://example.com/b"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              },
+              {
+                "title": "B",
+                "url": "https://example.com/b"
+              }
+            ],
+            "item_count": 2,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_meta_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Không gọi công cụ cho câu hỏi về khả năng của agent."
+      },
+      "input": "Bạn có thể giúp tôi làm những việc nghiên cứu nào? Chỉ giới thiệu khả năng, chưa cần tìm dữ liệu.",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi có thể hỗ trợ bạn trong các nhiệm vụ nghiên cứu sau:\n\n### **1. Tìm kiếm và thu thập dữ liệu**\n- **Tìm kiếm trên mạng xã hội**: Tìm bài viết, tweet, hoặc nội dung từ các nền tảng như Twitter, Facebook, v.v. (sử dụng `social_search`).\n- **Tìm kiếm tin tức và bài báo**: Tìm kiếm thông tin từ các nguồn tin tức hoặc bài báo (sử dụng `lookup`).\n- **Tìm kiếm bài báo khoa học**: Tìm kiếm các bài báo nghiên cứu trên các kho dữ liệu như arXiv (sử dụng `papers`).\n- **Lấy nội dung từ URL**: Trích xuất nội dung từ một trang web hoặc bài báo (sử dụng `fetch`).\n\n### **2. Phân tích và xử lý dữ liệu**\n- **Trích xuất văn bản từ hình ảnh**: Đọc văn bản từ hình ảnh hoặc tệp tin (OCR).\n- **Tóm tắt nội dung**: Tóm tắt các bài viết, bài báo, hoặc tài liệu dài.\n- **Phân tích xu hướng**: Phân tích các xu hướng trên mạng xã hội hoặc tin tức (sử dụng `timeline`).\n- **Loại bỏ trùng lặp**: Loại bỏ các mục trùng lặp trong danh sách dữ liệu (sử dụng `deduplicate`).\n\n### **3. Định dạng và trình bày dữ liệu**\n- **Định dạng nội dung**: Trình bày dữ liệu theo các khuôn mẫu như bản tin, danh sách, hoặc đoạn văn (sử dụng `format`).\n- **Tạo bản tóm tắt hàng ngày**: Tạo bản tóm tắt tin tức hoặc nội dung theo ngày.\n\n### **4. Hỗ trợ xuất bản và chia sẻ**\n- **Gửi nội dung**: Gửi tin nhắn, bài viết, hoặc nội dung đến các nền tảng hoặc người dùng (sử dụng `send`).\n- **Kiểm tra chính sách**: Kiểm tra các chính sách liên quan đến nghiên cứu, quyền riêng tư, hoặc xuất bản (sử dụng `policy`).\n\n### **5. Nghiên cứu chuyên sâu**\n- **Phân tích bài báo khoa học**: Trích xuất và phân tích nội dung từ các bài báo khoa học (sử dụng `paper_text`).\n- **Tìm kiếm thông tin chuyên ngành**: Tìm kiếm thông tin trong các lĩnh vực cụ thể như AI, y học, v.v.\n\nNếu bạn có nhu cầu cụ thể, hãy cho tôi biết, tôi sẽ giúp bạn thực hiện!",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G03_missing_article_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Thiếu URL cần hỏi lại, không đoán link hoặc tìm kiếm thay."
+      },
+      "input": "Đọc bài nghiên cứu trên trang web này và tóm tắt giúp tôi. Tôi chưa gửi đường dẫn.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp đường dẫn đến bài nghiên cứu không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp đường dẫn đến bài nghiên cứu không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp đường dẫn đến bài nghiên cứu không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_news_query_separation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Chủ đề chưa có trong base: tách query, topic và timeframe theo giả thuyết v2."
+      },
+      "input": "Tìm tin tức về quantum computing hôm nay.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "quantum computing",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "quantum computing",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "quantum computing",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "quantum computing",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "What Quantum Computing (QUBT) Said on Its Q3 Earnings Call",
+                "url": "https://finance.yahoo.com/markets/stocks/articles/quantum-computing-qubt-said-q3-021438425.html",
+                "source": "finance.yahoo.com",
+                "summary": "Quantum Computing Inc (QCi) develops quantum computing hardware and software, with a focus on photonics and systems designed to operate at room temperature. The company aims to make quantum technology more accessible for commercial and research applications.\n\nIts offerings include the Dirac quantum computing systems and software for optimization problems. QCi also develops photonic technologies for applications such as quantum sensing and cybersecurity. [...] Will the Most Successful Quantum Firms Be Software Companies?\n\nQuantum Computing (NASDAQ:QUBT) reported record third-quarter 2026 revenue of $9.5 million, driven primarily by its expanded photonics business, while its net loss widened as the company increased spending on personnel, research and commercialization. [...] Quantum Computing ended September with $174.3 million in cash and cash equivalents, $1.1 billion in investments and $916.9 million in working capital. Its $39.1 million backlog is expected mostly to convert to revenue over the next 12 months, though order timing remains unpredictable.",
+                "score": 0.9168945
+              },
+              {
+                "title": "What will it take to integrate quantum computing into drug discovery? | Drug Discovery News",
+                "url": "https://www.drugdiscoverynews.com/what-will-it-take-to-integrate-quantum-computing-into-drug-discovery-17643",
+                "source": "drugdiscoverynews.com",
+                "summary": "Quantum computing is often discussed alongside AI as another technology that could accelerate drug discovery. But while AI uses patterns in data to generate predictions and hypotheses, quantum computing takes a fundamentally different approach to processing information. [...] While classical computing relies on conventional bits, which represent information as either a zero or a one, quantum computers use quantum bits, or qubits, which can exist in multiple states at once. This makes them potentially well suited to simulating the behavior of electrons and their interactions – processes that underpin chemical reactions and molecular properties but can be challenging to capture using classical computational methods.\n\nIt's a completely new computing modality. [...] Quantum computing has the potential to accelerate and enhance drug discovery. But even as researchers work to improve the hardware and software, significant gaps remain in the infrastructure needed to bring the technology into biotechnology. Access to quantum computing remains difficult and expensive, while expertise spanning both quantum computing and biology is still limited.\n\nWe need people who understand each field and people who can work across both.",
+                "score": 0.82117355
+              },
+              {
+                "title": "Diraq Deploys Silicon Spin Quantum Computer Inside a Commercial Data Center",
+                "url": "https://thequantuminsider.com/2026/11/09/diraq-deploys-silicon-spin-quantum-computer-inside-a-commercial-data-center",
+                "source": "thequantuminsider.com",
+                "summary": "“Quantum computing’s economic value isn’t a distant promise,” said Matt Langione, Managing Director and Partner, Boston Consulting Group. “Our research shows that technologies leveraging advanced quantum physics have already compounded $19 to $27 trillion in value today, through semiconductors, GPS, MRI and early drug discovery. We think quantum computing can unlock a further $3.5 trillion at maturity.” [...] PRESS RELEASE — Quantum computing pioneer Diraq has installed the world’s first silicon spin quantum computer inside a commercial data center, now live at Equinix (Nasdaq: EQIX) in Sydney, Australia. As quantum computing moves into the everyday infrastructure that businesses rely on, Diraq is also launching Quantum at Work, a new report exploring how the technology could be put to work on some of the world’s hardest problems including medicine discovery. [...] Alongside the deployment, Diraq is launching Quantum at Work, a new report examining how quantum computing could contribute to progress across fields including medicine, energy, materials, climate and transport. This makes up part of Diraq’s broader work outlining what future, utility scale quantum computers will make possible.",
+                "score": 0.8184036
+              },
+              {
+                "title": "Quantinuum and RIKEN Expand Partnership to Accelerate the Commercialization of Quantum-AI Hybrid Supercomputing in Japan",
+                "url": "https://www.quantinuum.com/press-releases/quantinuum-and-riken-expand-partnership-to-accelerate-the-commercialization-of-quantum-ai-hybrid-supercomputing-in-japan",
+                "source": "quantinuum.com",
+                "summary": "Quantinuum (NASDAQ: QNT) is a leading quantum computing company offering a full-stack platform designed to make quantum computing deployable in real-world environments. The company has commercially deployed multiple generations of trapped-ion based quantum systems built on the well-established QCCD architecture, which it has implemented with novel designs and capabilities to achieve the industry’s highest accuracy levels based on average two-qubit gate fidelity. Quantinuum has active [...] Quantinuum is a leading quantum computing company offering a full-stack platform designed to make quantum computing deployable in real-world environments. The company has commercially deployed multiple generations of trapped-ion based quantum systems built on the well-established QCCD architecture, which it has implemented with novel designs and capabilities to achieve the industry’s highest accuracy levels based on average two-qubit gate fidelity. Quantinuum has active engagements with market [...] Quantinuum is a leading quantum computing company offering a full-stack platform designed to make quantum computing deployable in real-world environments. The company has commercially deployed multiple generations of trapped-ion based quantum systems built on the well-established QCCD architecture, which it has implemented with novel designs and capabilities to achieve the industry’s highest accuracy levels based on average two-qubit gate fidelity. Quantinuum has active engagements with market",
+                "score": 0.81665546
+              },
+              {
+                "title": "Japan-Developed Quantum Computers Join Forces with a Supercomputer at the University of Osaka – a First in Japan | Asia Research News",
+                "url": "https://www.asiaresearchnews.com/content/japan-developed-quantum-computers-join-forces-supercomputer-university-osaka-%E2%80%93-first-japan",
+                "source": "asiaresearchnews.com",
+                "summary": "As a proof of concept, the researchers used quantum-selected configuration interaction (QSCI), a method that combines quantum measurements with conventional calculations. The quantum computer identifies important electron configurations, while the supercomputer performs the matrix calculations needed to determine the system’s energy. In a test involving four hydrogen atoms, OCTOPUS and QIQB’s Urchin quantum computer ran the full calculation as one integrated workflow, producing a ground-state [...] Understanding how electrons interact is crucial to developing new materials and drugs, but the calculations can be demanding even for powerful supercomputers. Quantum computers may help with some of these problems, yet today’s machines have limited numbers of qubits and are prone to errors. Combining quantum and conventional computing offers a way to make use of their different strengths.",
+                "score": 0.7352811
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_send_requires_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Chưa xác nhận thì phải hỏi yes/no; không gửi thật. Đây là case phát hiện lỗi ranh giới còn tồn tại."
+      },
+      "input": "Đăng bản tin lên Telegram giúp tôi: Bản tin thử nghiệm. Tôi chưa xác nhận việc gửi.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin thử nghiệm.",
+              "confirmed": false
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call send"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin thử nghiệm.",
+            "confirmed": false
+          },
+          "result": {
+            "tool": "send_telegram",
+            "status": "needs_confirmation",
+            "message": "Only send after the user explicitly confirms."
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM01_clarify_then_handle",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Dùng thông tin bổ sung, giữ limit từ lượt trước."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 2 tweet mới nhất giúp tôi."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn muốn xem tài khoản nào?"
+        },
+        {
+          "role": "user",
+          "content": "Tài khoản sama, handle không có @."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "sama",
+            "limit": 2
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "sama",
+            "items": [
+              {
+                "title": "RT @fouadmatin: Today’s GPT-6 Cyber release is a meaningful step for defenders: stronger vulnerability research and bett",
+                "summary": "RT @fouadmatin: Today’s GPT-6 Cyber release is a meaningful step for defenders: stronger vulnerability research and better alignment. We’ve…",
+                "url": "https://x.com/sama/status/2118471941002842341",
+                "source": "@sama",
+                "date": "Thu Nov 05 22:34:04 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 53,
+                  "views": "47438"
+                }
+              },
+              {
+                "title": "RT @thsottiaux: Day 25/",
+                "summary": "RT @thsottiaux: Day 25/\n\nWe are doubling all usage limits for all Pro 100/200/500 tiers and Business Premium, effective today.\n\nWe heard yo…",
+                "url": "https://x.com/sama/status/2117797818756952416",
+                "source": "@sama",
+                "date": "Wed Nov 04 01:55:21 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 2702,
+                  "views": "41989"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM02_change_topic_keep_time",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Giả thuyết v2 ở multi-turn: cập nhật chủ đề, giữ mốc thời gian."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin AI trong tuần này."
+        },
+        {
+          "role": "user",
+          "content": "Đổi chủ đề sang battery recycling, vẫn là tin trong tuần này."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "battery recycling",
+              "topic": "news",
+              "timeframe": "week"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "battery recycling",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "battery recycling",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "battery recycling",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "UK’s battery recycling gap hands China control of critical minerals, supplier says - Automotive News",
+                "url": "https://www.autonews.com/ev/ane-battery-ev-altilium-china-recycling-1103/",
+                "source": "autonews.com",
+                "summary": "# UK’s battery recycling gap hands China control of critical minerals, supplier says. November 03, 2026 05:25 AM EST. ## Featured Stories. Automotive News' 2026 Best Dealerships To Work For say full medical coverage, four-day workweeks and financial transparency keep employees loyal — and customers coming back. Best Dealerships To Work For. Top-rated dealerships drive retention through benefits and financial transparency. With Audi plant in Georgia, VW Group will lean on U.S. more than ever. Trump’s Canada auto tariffs become a key issue in Michigan Senate race. SEMA Show is test bed for concepts that inspire new products.",
+                "score": 0.47694567
+              },
+              {
+                "title": "Great Power highlights battery storage solutions to support Indonesia’s energy transition - tanahair.net",
+                "url": "https://tanahair.net/great-power-highlights-battery-storage-solutions-to-support-indonesias-energy-transition/",
+                "source": "tanahair.net",
+                "summary": "Jakarta — Battery energy storage systems could help Indonesian industries reduce energy costs, cut carbon emissions and improve power reliability as electricity demand rises, an energy storage company executive said on Tuesday, November 10. Rachmad Setiawan, marketing director of PT Great Power Energy Teknologi Indonesia, said integrated solar power, battery storage and energy management systems could help businesses manage fluctuating electricity demand while reducing their dependence on fossil fuels. Speaking at the opening of the 2026 ASEAN Solar Storage Summit in Jakarta, Rachmad outlined the company’s green and smart energy solutions for industries ranging from manufacturing and palm oil processing to mining, oil and gas, commercial buildings and utilities. “Making clean energy safer, more stable and accessible” is the vision of Great Power, a Chinese energy storage manufacturer established in 2001 and listed on the Shenzhen Stock Exchange in 2015, he said. Rachmad said the partnership was also preparing to address the growing need for battery recycling as more energy storage systems reach the end of their operational lives.",
+                "score": 0.38214198
+              },
+              {
+                "title": "If It Can Power a Car, Why Not a Data Center? - The Atlantic",
+                "url": "https://www.theatlantic.com/science/2026/11/electric-vehicle-battery-reuse/689326/",
+                "source": "theatlantic.com",
+                "summary": "# If It Can Power a Car, Why Not a Data Center? A gold rush is coming for used EV batteries. Once they can muster just 70 to 80 percent of their original charge, they’re not very useful as car batteries anymore: They simply can’t get a vehicle far. But even a fraction of the energy needed to move a car is still a lot of energy—enough to, say, power the average house. “I’m not necessarily saying that everybody should hijack their parents’ house and stick an EV battery on the side,” he told me. Experts on car-battery reuse also are not saying that everybody should hijack their parents’ house and stick an EV battery on the side. (In fact, most of the ones I talked with cautioned against it.) But for the better part of a decade in Europe, whole rafts of EV batteries have been repurposed—with more formal technical and engineering support—to store energy that can power homes, businesses, and factories.",
+                "score": 0.3175749
+              },
+              {
+                "title": "Garbage truck fire closes major Mission District thoroughfare as trash burns in middle of street - San Francisco Chronicle",
+                "url": "https://www.sfchronicle.com/sf/article/garbage-truck-fire-mission-22514527.php",
+                "source": "sfchronicle.com",
+                "summary": "# Garbage truck fire closes major Mission District thoroughfare as trash burns in middle of street. By Aidin Vaziri, Staff Writer. A garbage truck fire closed a major Mission District thoroughfare Thursday morning, with San Francisco fire officials urging drivers to avoid the area. The fire was reported on South Van Ness Avenue between 16th and 17th streets, the San Francisco Fire Department said. SFFD also used the incident to remind residents that batteries can cause fires in garbage and recycling streams, saying the fire was caused by an improperly discarded battery-powered device that ignited when compacted in the truck. Aidin Vaziri is a staff writer and pop music critic at the San Francisco Chronicle. California is getting a very different kind of governor in Xavier Becerra. Cards and strategy combine in a new way. OPINION: Progressive candidates had a historic night throughout the U.S. on Tuesday. But Prop 40 appears on track to fail in California.",
+                "score": 0.22566435
+              },
+              {
+                "title": "True Recycling: The Key to Solar Circularity - POWER Magazine",
+                "url": "https://www.powermag.com/true-recycling-the-key-to-solar-circularity/",
+                "source": "powermag.com",
+                "summary": "##### Sign In. Home Solar True Recycling: The Key to Solar Circularity. # True Recycling: The Key to Solar Circularity. Solar has spent decades proving it can generate clean power quickly and at scale. Now, with the first real wave of end-of-life (EOL) panels arriving through repowering and decommissioning, solar has to prove its circularity, at scale. And for solar to prove its sustainability, the method of recovery of used equipment is what counts. Up to this point, a decent volume of panels has hit end-of-life, but that volume has been low enough for the industry to go mostly unchecked. With tens of millions of panels hitting the stream now, and hundreds of millions imminent, the time is now to prove true recycling at scale, mitigating the risk of major asset owners and strengthening the clean power story of the solar industry as a whole. Clean, solar glass cullet recovered from end-of-life solar panels can be processed and repurposed into new materials.",
+                "score": 0.15847395
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM03_cancel_publish",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Lượt mới hủy hành động phải thắng ý định gửi cũ; không gọi tool."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tôi định gửi bản tin lên Telegram."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn xác nhận gửi bản tin không?"
+        },
+        {
+          "role": "user",
+          "content": "Hủy gửi. Đừng làm gì thêm."
+        }
+      ],
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Đã hủy gửi. Không thực hiện thêm hành động nào.",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "GM04_switch_to_deduplicate",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Tool mới dùng dữ liệu từ lịch sử, chỉ xử lý ý định mới nhất.",
+        "expected_removed_count": 1
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Danh sách nguồn: [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A2\",\"url\":\"https://example.com/a\"}]. Hãy chuẩn bị digest."
+        },
+        {
+          "role": "user",
+          "content": "Khoan trình bày. Bây giờ chỉ loại trùng URL trong danh sách tôi vừa đưa, giữ bản đầu tiên."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/a"
+                },
+                {
+                  "title": "A2",
+                  "url": "https://example.com/a"
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              },
+              {
+                "title": "A2",
+                "url": "https://example.com/a"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "GM05_clarify_then_url",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Nhận URL sau clarify và đọc đúng link, không hỏi lại."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đọc và tóm tắt trang tài liệu này."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn gửi đường dẫn trang tài liệu nhé?"
+        },
+        {
+          "role": "user",
+          "content": "Đây là link: https://docs.python.org/3/tutorial/"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://docs.python.org/3/tutorial/"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://docs.python.org/3/tutorial/"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://docs.python.org/3/tutorial/"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://docs.python.org/3/tutorial/",
+            "items": [
+              {
+                "title": "The Python Tutorial — Python 3.15.2 documentation",
+                "url": "https://docs.python.org/3/tutorial/",
+                "source": "docs.python.org",
+                "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through.\n\n- [1\\. Whetting Your Appetite](https://docs.python.org/3/tutorial/appetite.html)\n- [2\\. Using the Python Interpreter](https://"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "case_id": "G01_deduplicate_provided_items",
+    "expected_removed_count": 1,
+    "observed_removed_count": 1,
+    "passed": true
+  },
+  {
+    "case_id": "GM04_switch_to_deduplicate",
+    "expected_removed_count": 1,
+    "observed_removed_count": 1,
+    "passed": true
+  }
+]

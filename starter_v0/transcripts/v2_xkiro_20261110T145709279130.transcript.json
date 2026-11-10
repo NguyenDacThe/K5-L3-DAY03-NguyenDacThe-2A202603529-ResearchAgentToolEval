@@ -1,0 +1,295 @@
+{
+  "transcript_id": "v2_xkiro_20261110T145709279130",
+  "version": "v2",
+  "artifact_version": "v2+p68cbef3b0ace+t3f63f515fa69",
+  "prompt_hash": "68cbef3b0ace43b655c6f704ba9101f27a7f4cbe68d5688ada24cbc501262d07",
+  "tools_hash": "3f63f515fa69ff0b5282d8ad9a7fd0ae7b62a60a0f57f77590542fc00ebce8df",
+  "provider": "xkiro",
+  "model": "mistralai/mistral-large-2512",
+  "system_prompt": "artifacts\\versions\\v2\\system_prompt.md",
+  "tools": "artifacts\\versions\\v2\\tools.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 4,
+  "created_at": "2026-11-10T14:57:09",
+  "updated_at": "2026-11-10T14:57:27",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T14:57:09",
+      "user": "Remove duplicate URLs and keep the first item: [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A2\",\"url\":\"https://example.com/a#part\"}]. Only clean this list.",
+      "status": "answered",
+      "assistant_text": "```json\n[\n  {\n    \"title\": \"A\",\n    \"url\": \"https://example.com/a\"\n  }\n]\n```",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "deduplicate",
+              "args": {
+                "items": [
+                  {
+                    "title": "A",
+                    "url": "https://example.com/a"
+                  },
+                  {
+                    "title": "A2",
+                    "url": "https://example.com/a#part"
+                  }
+                ]
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "deduplicate",
+              "args": {
+                "items": [
+                  {
+                    "title": "A",
+                    "url": "https://example.com/a"
+                  },
+                  {
+                    "title": "A2",
+                    "url": "https://example.com/a#part"
+                  }
+                ]
+              },
+              "result": {
+                "tool": "deduplicate",
+                "items": [
+                  {
+                    "title": "A",
+                    "url": "https://example.com/a"
+                  }
+                ],
+                "item_count": 1,
+                "removed_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": "```json\n[\n  {\n    \"title\": \"A\",\n    \"url\": \"https://example.com/a\"\n  }\n]\n```",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              },
+              {
+                "title": "A2",
+                "url": "https://example.com/a#part"
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a"
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T14:57:12"
+    },
+    {
+      "turn_index": 2,
+      "started_at": "2026-11-10T14:57:12",
+      "user": "Summarize this article for me. I have not provided the URL yet.",
+      "status": "waiting_for_user",
+      "assistant_text": "Could you provide the URL of the article you'd like me to summarize?",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "clarify",
+              "args": {
+                "question": "Could you provide the URL of the article you'd like me to summarize?",
+                "response_type": "text"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "clarify",
+              "args": {
+                "question": "Could you provide the URL of the article you'd like me to summarize?",
+                "response_type": "text"
+              },
+              "result": {
+                "tool": "ask_user",
+                "question": "Could you provide the URL of the article you'd like me to summarize?",
+                "response_type": "text",
+                "options": [],
+                "awaiting_user": true
+              }
+            }
+          ]
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Could you provide the URL of the article you'd like me to summarize?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Could you provide the URL of the article you'd like me to summarize?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T14:57:13"
+    },
+    {
+      "turn_index": 3,
+      "started_at": "2026-11-10T14:57:13",
+      "user": "Here is the URL: https://docs.python.org/3/tutorial/",
+      "status": "answered",
+      "assistant_text": "### **Summary of *The Python Tutorial* (Python 3.15.2 Documentation)**\n\n**Source:** [docs.python.org](https://docs.python.org/3/tutorial/)\n\n- **Audience:** Designed for **programmers new to Python**, not absolute beginners in programming.\n- **Key Features of Python:**\n  - Easy to learn, powerful, with efficient high-level data structures.\n  - Supports **object-oriented programming** with a simple, effective approach.\n  - **Elegant syntax**, dynamic typing, and interpreted nature make it ideal for **scripting and rapid application development**.\n  - Cross-platform compatibility (available for all major platforms).\n\n- **Accessibility:**\n  - The **Python interpreter** and **standard library** are freely available (source/binary) via [Python’s official website](https://www.python.org/).\n  - Supports **extensions** in C/C++ and can be embedded in customizable applications.\n\n- **Tutorial Purpose:**\n  - Informally introduces **basic concepts and features** of Python.\n  - Assumes prior programming knowledge; examples are self-contained for offline reading.\n  - Covers **noteworthy features** (not exhaustive) to give a sense of Python’s style.\n  - After completion, readers can **write Python modules/programs** and explore the [Python Standard Library](https://docs.python.org/3/library/index.html).\n\n- **Additional Resources:**\n  - [Python Language Reference](https://docs.python.org/3/reference/index.html) (formal definition).\n  - [Extending Python in C/C++](https://docs.python.org/3/extending/index.html).\n  - [Glossary](https://docs.python.org/3/glossary.html) for key terms.",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "fetch",
+              "args": {
+                "url": "https://docs.python.org/3/tutorial/"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "fetch",
+              "args": {
+                "url": "https://docs.python.org/3/tutorial/"
+              },
+              "result": {
+                "tool": "read_url",
+                "url": "https://docs.python.org/3/tutorial/",
+                "items": [
+                  {
+                    "title": "The Python Tutorial — Python 3.15.2 documentation",
+                    "url": "https://docs.python.org/3/tutorial/",
+                    "source": "docs.python.org",
+                    "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through.\n\n- [1\\. Whetting Your Appetite](https://docs.python.org/3/tutorial/appetite.html)\n- [2\\. Using the Python Interpreter](https://"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "format",
+              "args": {
+                "items": [
+                  {
+                    "title": "The Python Tutorial — Python 3.15.2 documentation",
+                    "url": "https://docs.python.org/3/tutorial/",
+                    "source": "docs.python.org",
+                    "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through."
+                  }
+                ],
+                "template": "brief"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "format",
+              "args": {
+                "items": [
+                  {
+                    "title": "The Python Tutorial — Python 3.15.2 documentation",
+                    "url": "https://docs.python.org/3/tutorial/",
+                    "source": "docs.python.org",
+                    "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through."
+                  }
+                ],
+                "template": "brief"
+              },
+              "result": {
+                "tool": "render_digest",
+                "template": "brief",
+                "markdown": "- ### Navigation  - [index](https://docs.python.org/3/genindex.html \"General Index\") - [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\| - [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\| - [previous](https://do... - [docs.python.org](https://docs.python.org/3/tutorial/)",
+                "item_count": 1
+              }
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "assistant_text": "### **Summary of *The Python Tutorial* (Python 3.15.2 Documentation)**\n\n**Source:** [docs.python.org](https://docs.python.org/3/tutorial/)\n\n- **Audience:** Designed for **programmers new to Python**, not absolute beginners in programming.\n- **Key Features of Python:**\n  - Easy to learn, powerful, with efficient high-level data structures.\n  - Supports **object-oriented programming** with a simple, effective approach.\n  - **Elegant syntax**, dynamic typing, and interpreted nature make it ideal for **scripting and rapid application development**.\n  - Cross-platform compatibility (available for all major platforms).\n\n- **Accessibility:**\n  - The **Python interpreter** and **standard library** are freely available (source/binary) via [Python’s official website](https://www.python.org/).\n  - Supports **extensions** in C/C++ and can be embedded in customizable applications.\n\n- **Tutorial Purpose:**\n  - Informally introduces **basic concepts and features** of Python.\n  - Assumes prior programming knowledge; examples are self-contained for offline reading.\n  - Covers **noteworthy features** (not exhaustive) to give a sense of Python’s style.\n  - After completion, readers can **write Python modules/programs** and explore the [Python Standard Library](https://docs.python.org/3/library/index.html).\n\n- **Additional Resources:**\n  - [Python Language Reference](https://docs.python.org/3/reference/index.html) (formal definition).\n  - [Extending Python in C/C++](https://docs.python.org/3/extending/index.html).\n  - [Glossary](https://docs.python.org/3/glossary.html) for key terms.",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://docs.python.org/3/tutorial/"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://docs.python.org/3/tutorial/",
+            "items": [
+              {
+                "title": "The Python Tutorial — Python 3.15.2 documentation",
+                "url": "https://docs.python.org/3/tutorial/",
+                "source": "docs.python.org",
+                "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through.\n\n- [1\\. Whetting Your Appetite](https://docs.python.org/3/tutorial/appetite.html)\n- [2\\. Using the Python Interpreter](https://"
+              }
+            ]
+          }
+        },
+        {
+          "tool": "format",
+          "args": {
+            "items": [
+              {
+                "title": "The Python Tutorial — Python 3.15.2 documentation",
+                "url": "https://docs.python.org/3/tutorial/",
+                "source": "docs.python.org",
+                "summary": "### Navigation\n\n- [index](https://docs.python.org/3/genindex.html \"General Index\")\n- [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\|\n- [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\|\n- [previous](https://docs.python.org/3/whatsnew/changelog.html \"Changelog\") \\|\n- ![Python logo](https://docs.python.org/3/_static/py.svg)\n- [Python](https://www.python.org/) »\n- German \\| DeutschGreek \\| ΕλληνικάEnglishSpanish \\| españolPersian \\| فارسیFrench \\| françaisItalian \\| italianoJapanese \\| 日本語Korean \\| 한국어Punjabi \\| ਪੰਜਾਬੀPolish \\| polskiBrazilian Portuguese \\| Português brasileiroRomanian \\| RomâneșteRussian \\| РусскийTurkish \\| TürkçeSimplified Chinese \\| 简体中文Traditional Chinese \\| 繁體中文\n\ndev (3.16)3.15.23.143.133.123.113.103.93.83.73.63.53.43.33.23.13.02.72.6\n\n- [3.15.2 documentation](https://docs.python.org/3/index.html) »\n\n- [The Python Tutorial](https://docs.python.org/3/tutorial/index.html)\n- \\|\n\n- Theme\nAutoLightDark \\|\n\n# The Python Tutorial [¶](https://docs.python.org/3/tutorial/index.html\\#the-python-tutorial \"Link to this heading\")\n\nTip\n\nThis tutorial is designed for\n_programmers_ that are new to the Python language,\n**not** _beginners_ who are new to programming.\n\nPython is an easy to learn, powerful programming language. It has efficient\nhigh-level data structures and a simple but effective approach to\nobject-oriented programming. Python’s elegant syntax and dynamic typing,\ntogether with its interpreted nature, make it an ideal language for scripting\nand rapid application development in many areas on most platforms.\n\nThe Python interpreter and the extensive standard library are freely available\nin source or binary form for all major platforms from the Python website,\n[https://www.python.org/](https://www.python.org/), and may be freely distributed. The same site also\ncontains distributions of and pointers to many free third party Python modules,\nprograms and tools, and additional documentation.\n\nThe Python interpreter is easily extended with new functions and data types\nimplemented in C or C++ (or other languages callable from C). Python is also\nsuitable as an extension language for customizable applications.\n\nThis tutorial introduces the reader informally to the basic concepts and\nfeatures of the Python language and system. Be aware that it expects you to\nhave a basic understanding of programming in general. It helps to have a Python\ninterpreter handy for hands-on experience, but all examples are self-contained,\nso the tutorial can be read off-line as well.\n\nFor a description of standard objects and modules, see [Python built-ins reference](https://docs.python.org/3/builtins/index.html#builtins-index) and\n[The Python standard library](https://docs.python.org/3/library/index.html#library-index). [The Python Language Reference](https://docs.python.org/3/reference/index.html#reference-index) gives a more formal definition of\nthe language. To write extensions in C or C++, read [Extending and Embedding the Python Interpreter](https://docs.python.org/3/extending/index.html#extending-index) and\n[Python/C API reference manual](https://docs.python.org/3/c-api/index.html#c-api-index). There are also several books covering Python in depth.\n\nThis tutorial does not attempt to be comprehensive and cover every single\nfeature, or even every commonly used feature. Instead, it introduces many of\nPython’s most noteworthy features, and will give you a good idea of the\nlanguage’s flavor and style. After reading it, you will be able to read and\nwrite Python modules and programs, and you will be ready to learn more about the\nvarious Python library modules described in [The Python standard library](https://docs.python.org/3/library/index.html#library-index).\n\nThe [Glossary](https://docs.python.org/3/glossary.html#glossary) is also worth going through."
+              }
+            ],
+            "template": "brief"
+          },
+          "result": {
+            "tool": "render_digest",
+            "template": "brief",
+            "markdown": "- ### Navigation  - [index](https://docs.python.org/3/genindex.html \"General Index\") - [modules](https://docs.python.org/3/py-modindex.html \"Python Module Index\") \\| - [next](https://docs.python.org/3/tutorial/appetite.html \"1. Whetting Your Appetite\") \\| - [previous](https://do... - [docs.python.org](https://docs.python.org/3/tutorial/)",
+            "item_count": 1
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T14:57:27"
+    }
+  ]
+}

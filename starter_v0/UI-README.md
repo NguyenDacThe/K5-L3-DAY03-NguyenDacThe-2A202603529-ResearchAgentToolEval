@@ -10,7 +10,7 @@ Chạy trong thư mục `starter_v0` bằng PowerShell:
 Mở http://localhost:8501. Key, endpoint và model lấy từ `.env`:
 `XKIRO_API_KEY`, `XKIRO_BASE_URL`, `XKIRO_MODEL`.
 
-- Chọn v0/v1 ở thanh bên. Mỗi phiên bản dùng snapshot trong `artifacts/versions/`.
+- Chọn v0/v1/v2/v3 ở thanh bên. Mỗi phiên bản dùng snapshot trong `artifacts/versions/`.
 - Chuyển phiên bản hoặc bấm **Cuộc trò chuyện mới** sẽ bắt đầu phiên chat mới.
 - Khi agent hỏi lại, nhập câu trả lời vào cùng ô chat để giữ ngữ cảnh.
 - Mở **Nguồn và công cụ đã dùng** để xem tham số và kết quả thực thi.
@@ -19,6 +19,7 @@ Mở http://localhost:8501. Key, endpoint và model lấy từ `.env`:
 - UI dùng bộ tool đã loại `send`, vì vậy không dùng transcript UI để thay thế điểm base eval.
 
 Gợi ý thử thủ công: “Tóm tắt 3 tweet mới nhất” → trả lời “@sama” khi agent hỏi → “Đổi sang 2 tweet”.
+Tool mới ở v2: “Loại trùng URL trong danh sách [{\"title\":\"A\",\"url\":\"https://example.com/a\"},{\"title\":\"A2\",\"url\":\"https://example.com/a#part\"}], giữ bản đầu tiên.”
 Các phiên bản thử nghiệm có thể vẫn mắc lỗi; dùng log để kiểm tra thay vì giả định kết quả đã đúng.
 
 UI hiện chạy local, chưa có link public. Streamlit cần Python server nên không triển khai
